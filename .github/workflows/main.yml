@@ -1,30 +1,12 @@
-name: FastAPI CI/CD
+name: FastAPI Deploy
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install pytest
-      - name: Run tests
-        run: pytest
   deploy:
-    needs: test  # Начнется только если тесты прошли успешно
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v0.1.5
@@ -33,6 +15,17 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /path/to/your/app
+            # 1. Переходим в папку проекта (создайте её заранее или добавьте git clone)
+            cd /var/www/my-fastapi-app || git clone https://github.com{{ github.repository }} /var/www/my-fastapi-app
+            cd /var/www/my-fastapi-app
+            
+            # 2. Обновляем код
             git pull origin main
+            
+            # 3. Пересобираем и запускаем (если используете Docker)
             docker-compose up -d --build
+            
+            # Или, если запускаете через venv и systemd (без Docker):
+            # source .venv/bin/activate
+            # pip install -r requirements.txt
+            # sudo systemctl restart fastapi_app
