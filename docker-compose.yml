@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  fastapi_app:
+    build: .
+    container_name: fastapi_project
+    restart: always
+    ports:
+      - "127.0.0.1:8000:8000"  # Привязываем только к локальному хосту для безопасности
+    environment:
+      - PYTHONUNBUFFERED=1

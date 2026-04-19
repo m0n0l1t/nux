@@ -1,12 +1,41 @@
-name: FastAPI Deploy
+name: FastAPI CI/CD with Docker
 
 on:
   push:
+    branches: [ main ]  # Запуск при пуше в ветку main
+  pull_request:
     branches: [ main ]
 
 jobs:
+  # ЭТАП 1: Тестирование (CI)
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest httpx  # Утилиты для тестов
+
+      - name: Run tests
+        run: |
+          # Если тестов пока нет, можно просто проверить синтаксис: 
+          # python -m compileall .
+          pytest
+
+  # ЭТАП 2: Деплой на сервер (CD)
   deploy:
     runs-on: ubuntu-latest
+    needs: test  # Деплой начнется только если тесты прошли успешно
+    if: github.ref == 'refs/heads/main'  # Деплоим только из ветки main
     steps:
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v0.1.5
@@ -15,17 +44,15 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            # 1. Переходим в папку проекта (создайте её заранее или добавьте git clone)
-            cd /var/www/my-fastapi-app || git clone https://github.com{{ github.repository }} /var/www/my-fastapi-app
+            # Переходим в папку проекта
             cd /var/www/my-fastapi-app
             
-            # 2. Обновляем код
+            # Подтягиваем последние изменения
             git pull origin main
             
-            # 3. Пересобираем и запускаем (если используете Docker)
-            docker-compose up -d --build
+            # Пересобираем и запускаем контейнеры
+            # Используем "docker compose" (современный стандарт)
+            docker compose up -d --build
             
-            # Или, если запускаете через venv и systemd (без Docker):
-            # source .venv/bin/activate
-            # pip install -r requirements.txt
-            # sudo systemctl restart fastapi_app
+            # Очистка старых ненужных образов, чтобы не забивать диск
+            docker image prune -f
