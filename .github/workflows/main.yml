@@ -45,7 +45,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             # Переходим в папку проекта
-            cd /var/www/my-fastapi-app
+            cd /var/www/gotelegram-site/nux
             
             # Подтягиваем последние изменения
             git pull origin main
