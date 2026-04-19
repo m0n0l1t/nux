@@ -9,8 +9,8 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def read_item(request: Request):
-    # Передаем контекст: обязательный объект request и наш заголовок
     return templates.TemplateResponse(
-        "index.html",
-        {"request": request, "title": "Мое FastAPI Приложение"}
+        request=request,
+        name="index.html",
+        context={"title": "Мое FastAPI Приложение"}
     )
