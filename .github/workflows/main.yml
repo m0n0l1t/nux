@@ -45,7 +45,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             # Переходим в папку проекта
-            cd /var/www/gotelegram-site/nux
+            cd /var/www/gotelegram-site
             
             # Подтягиваем последние изменения
             git pull origin main
