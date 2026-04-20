@@ -11,6 +11,11 @@ templates = Jinja2Templates(directory="templates")
 # Монтируем статические файлы (CSS, JS, изображения)
 app.mount("/assets", StaticFiles(directory="templates/assets"), name="assets")
 
+@app.get("/health")
+async def health_check():
+    """Health check эндпоинт для проверки работоспособности приложения"""
+    return {"status": "ok", "message": "Application is running"}
+
 @app.get("/", response_class=HTMLResponse)
 async def read_item(request: Request):
     return templates.TemplateResponse(
