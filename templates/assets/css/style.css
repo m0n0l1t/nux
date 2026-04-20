@@ -1,0 +1,1015 @@
+/* ========== БАЗОВЫЕ СТИЛИ ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: #f8fafc;
+}
+
+/* ========== ЛЕНДИНГ ========== */
+
+/* Навигация */
+.navbar {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a73e8;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Hero секция */
+.hero {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #1a73e8 0%, #667eea 50%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Иллюстрация с плавающими карточками */
+.hero-illustration {
+    position: relative;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-card {
+    position: absolute;
+    background: white;
+    padding: 1.5rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    font-size: 1.1rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.card-1 {
+    top: 10%;
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.card-2 {
+    top: 45%;
+    right: 10%;
+    animation-delay: 1s;
+}
+
+.card-3 {
+    bottom: 10%;
+    left: 30%;
+    animation-delay: 2s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* Фичи */
+.features {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    background: white;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    color: #1e293b;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background: #f8fafc;
+    padding: 2rem;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.feature-card:hover {
+    border-color: #1a73e8;
+    box-shadow: 0 10px 30px rgba(26, 115, 232, 0.1);
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+}
+
+.feature-card p {
+    color: #64748b;
+    line-height: 1.6;
+}
+
+/* Тарифы */
+.pricing {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.pricing-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.pricing-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.pricing-card:hover {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
+}
+
+.pricing-card.featured {
+    border: 3px solid #1a73e8;
+}
+
+.pricing-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a73e8;
+    color: white;
+    padding: 0.25rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.pricing-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.price {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1a73e8;
+    margin-bottom: 1.5rem;
+}
+
+.price span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #64748b;
+}
+
+.price.free {
+    color: #10b981;
+}
+
+.pricing-features {
+    list-style: none;
+    margin-bottom: 2rem;
+}
+
+.pricing-features li {
+    padding: 0.5rem 0;
+    color: #475569;
+}
+
+/* Футер */
+.footer {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    color: #64748b;
+    margin-top: 4rem;
+}
+
+/* ========== КНОПКИ ========== */
+button, .btn-primary, .btn-secondary, .btn-outline {
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #1a73e8 0%, #667eea 100%);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 5px 20px rgba(26, 115, 232, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: white;
+    color: #1a73e8;
+    border: 2px solid #1a73e8;
+}
+
+.btn-secondary:hover {
+    background: #f0f4ff;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #1a73e8;
+    border: 2px solid #1a73e8;
+}
+
+.btn-outline:hover {
+    background: #f0f4ff;
+}
+
+.btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    background: white;
+    color: #1a73e8;
+    border: 2px solid #1a73e8;
+}
+
+button:disabled, .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button[data-loading="true"] {
+    position: relative;
+    color: transparent;
+}
+
+button[data-loading="true"]::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    top: 50%;
+    left: 50%;
+    margin-left: -7px;
+    margin-top: -7px;
+    border: 2px solid white;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ========== МОДАЛЬНЫЕ ОКНА ========== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    max-width: 450px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideUp 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #64748b;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+/* ========== ФОРМЫ ========== */
+.form-box {
+    padding: 1rem;
+}
+
+.form-box h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #1e293b;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 0.875rem 1rem;
+    margin: 0.5rem 0 1rem;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #64748b;
+}
+
+.form-footer a {
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ========== КОНТЕЙНЕР ПРИЛОЖЕНИЯ ========== */
+.container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ========== HEADER ПРИЛОЖЕНИЯ ========== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.header span {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.balance-display {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.connect-code {
+    display: block;
+    background: #f1f5f9;
+    padding: 1rem;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    text-align: center;
+    margin: 1rem 0;
+    border: 2px dashed #1a73e8;
+    user-select: all;
+}
+
+.proxy-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    transition: all 0.2s ease;
+}
+
+.proxy-link:hover {
+    color: #0c5fce;
+    text-decoration: underline;
+}
+
+.telegram-bot-link {
+    display: block;
+    background: linear-gradient(135deg, #0088cc 0%, #00a8e6 100%);
+    color: white;
+    text-align: center;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 1rem 0;
+    transition: all 0.2s ease;
+}
+
+.telegram-bot-link:hover {
+    box-shadow: 0 5px 20px rgba(0, 136, 204, 0.4);
+    transform: translateY(-2px);
+    text-decoration: none;
+    color: white;
+}
+
+.hint {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+/* ========== СЕРВИСЫ ========== */
+h1, h2, h3 {
+    color: #1e293b;
+    margin-bottom: 1rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+h3 {
+    font-size: 1.25rem;
+    margin-top: 2rem;
+}
+
+.service, .wg-service {
+    background: #f8fafc;
+    border-left: 4px solid #1a73e8;
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.service:hover, .wg-service:hover {
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.1);
+}
+
+.days {
+    font-weight: 700;
+    color: #10b981;
+}
+
+.error {
+    color: #dc2626;
+    background: #fee2e2;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    display: block;
+}
+
+.error:not(:empty) {
+    display: block;
+}
+
+hr {
+    margin: 2rem 0;
+    border: none;
+    border-top: 2px solid #e2e8f0;
+}
+
+/* ========== КНОПКИ ВНУТРИ СЕРВИСОВ ========== */
+button.small {
+    background: #10b981;
+    margin-top: 0.75rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+button.small:hover {
+    background: #059669;
+}
+
+#logoutBtn {
+    background: #ef4444;
+    color: white;
+    border: none;
+}
+
+#logoutBtn:hover {
+    background: #dc2626;
+}
+
+/* ========== КОД ========== */
+code {
+    background: #f1f5f9;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+/* ========== СКРЫТИЕ ЭЛЕМЕНТОВ ========== */
+.hidden {
+    display: none !important;
+}
+
+/* ========== СТРАНИЦА ИНСТРУКЦИЙ ========== */
+.instructions-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 3rem;
+    color: #1e293b;
+}
+
+.instructions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 2rem;
+}
+
+.instruction-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.instruction-card:hover {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
+}
+
+.instruction-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.instruction-icon {
+    font-size: 3rem;
+}
+
+.instruction-header h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.instruction-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a73e8;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.instruction-content h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #475569;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.instruction-content p {
+    color: #475569;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.instruction-content ol {
+    color: #475569;
+    line-height: 2;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.instruction-content ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.instruction-content ul li {
+    padding: 0.5rem 0;
+    color: #475569;
+}
+
+.instruction-content a {
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.instruction-content a:hover {
+    text-decoration: underline;
+}
+
+.instruction-content code {
+    background: #f1f5f9;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #1a73e8;
+}
+
+/* ========== МОДАЛЬНОЕ ОКНО ИНСТРУКЦИЙ ========== */
+.modal-large {
+    max-width: 800px;
+    width: 95%;
+}
+
+.instructions-container h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.instructions-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 0.875rem 1rem;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #64748b;
+    transition: all 0.2s ease;
+    border-radius: 0;
+}
+
+.tab-btn:hover {
+    color: #1a73e8;
+    background: #f8fafc;
+    transform: none;
+}
+
+.tab-btn.active {
+    color: #1a73e8;
+    border-bottom-color: #1a73e8;
+    background: transparent;
+}
+
+.instruction-tab {
+    display: none;
+}
+
+.instruction-tab.active {
+    display: block;
+}
+
+.instruction-tab h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+}
+
+.instruction-tab h4 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #475569;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.instruction-steps {
+    margin: 1.5rem 0;
+}
+
+.step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+}
+
+.step-number {
+    background: linear-gradient(135deg, #1a73e8 0%, #667eea 100%);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.step-text {
+    color: #475569;
+    line-height: 1.6;
+    padding-top: 0.3rem;
+}
+
+.instruction-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.instruction-list li {
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    color: #475569;
+    position: relative;
+}
+
+.instruction-list li:before {
+    content: '•';
+    color: #1a73e8;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+.instruction-note {
+    background: #f8fafc;
+    border-left: 4px solid #1a73e8;
+    padding: 1.25rem;
+    border-radius: 12px;
+    margin-top: 2rem;
+}
+
+.instruction-note strong {
+    color: #1e293b;
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: 1.05rem;
+}
+
+.instruction-note ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.instruction-note ul li {
+    padding: 0.4rem 0;
+    color: #475569;
+}
+
+/* ========== АДАПТИВНОСТЬ ========== */
+
+/* Планшет */
+@media (max-width: 768px) {
+    .hero {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 2rem 1.5rem;
+        text-align: center;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .hero-illustration {
+        display: none;
+    }
+
+    .nav-container {
+        padding: 1rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pricing-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Мобильный */
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .nav-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .nav-buttons button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .container {
+        padding: 1rem;
+        margin: 1rem;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-buttons {
+        width: 100%;
+    }
+
+    .header-buttons button {
+        flex: 1;
+    }
+
+    .modal-content {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    button, .btn-primary {
+        width: 100%;
+    }
+
+    .btn-small {
+        width: auto;
+    }
+}
