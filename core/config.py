@@ -34,7 +34,11 @@ os.makedirs(CLIENTS_DIR, exist_ok=True)
 os.makedirs(os.path.dirname(INSTRUCTION_PATH), exist_ok=True)
 
 # JWT настройки
-SECRET_KEY = get_required_env("SECRET_KEY")  # Обязательная переменная — без fallback
+import os
+# В режиме разработки используемdefault значения, но с предупреждением
+SECRET_KEY = os.getenv("SECRET_KEY") or os.getenv("SECRET_KEY_DEV", "dev-secret-key-change-in-prod")
+if "SECRET_KEY" not in os.environ and "SECRET_KEY_DEV" not in os.environ:
+    print("⚠️  WARNING: SECRET_KEY не установлен. Используется insecure default!")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 дней
 

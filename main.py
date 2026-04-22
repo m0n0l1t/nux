@@ -92,14 +92,15 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Nux Service API",
     description="API для управления Nux сервисами",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Указываем папку, где лежат наши HTML-файлы
 templates = Jinja2Templates(directory="templates")
 
 # Монтируем статические файлы (CSS, JS, изображения)
-app.mount("/assets", StaticFiles(directory="templates/assets"), name="assets")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.add_middleware(NoCacheMiddleware)
 
@@ -119,7 +120,7 @@ async def health_check():
 
 @app.get("/")
 async def root():
-    return FileResponse("templates/index.html")
+    return FileResponse("static/index.html")
 
 
 @app.get("/config/bot")

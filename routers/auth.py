@@ -12,16 +12,17 @@ async def register(
     request: UserRegisterRequest,
     db: AsyncSession = Depends(get_db)
 ):
+    print(1)
     invite = await crud.get_invite_by_code(db, request.invite_code)
     if not invite or invite.used_by_user_id:
         raise HTTPException(400, "Invalid or already used invite")
-    if invite.expires_at and invite.expires_at < datetime.utcnow():
+    if invite.expires_at and invite.expires_at < datetime.now():
         raise HTTPException(400, "Invite expired")
     if await crud.get_user_by_username(db, request.username):
         raise HTTPException(400, "Username exists")
     user = await crud.create_user(db, request.username, request.password, request.invite_code)
     invite.used_by_user_id = user.id
-    invite.used_at = datetime.utcnow()
+    invite.used_at = datetime.now()
     await db.commit()
     await crud.create_proxy_service(db, user.id)
     return {"message": "Registered", "user_id": user.id}

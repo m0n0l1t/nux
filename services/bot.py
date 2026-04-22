@@ -11,7 +11,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from dotenv import load_dotenv
 from sqlalchemy import select
 from datetime import datetime
-from db import models
+from db import models, crud
 from db.crud import create_proxy_service, create_user_from_telegram
 from db.database import engine, Base, AsyncSessionLocal
 

@@ -9,3 +9,4 @@ __pycache__/
 /files/
 /services/amnesia_example.py
 /services/telemt_example.py
+/migrations/versions/

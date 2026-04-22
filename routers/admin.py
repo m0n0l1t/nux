@@ -9,9 +9,10 @@ from core.schemas import AdminInviteCreateRequest, InviteResponse, AdminTopUpReq
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
-ADMIN_UUID = os.getenv("ADMIN_UUID")
-if not ADMIN_UUID:
-    raise RuntimeError("ADMIN_UUID environment variable is required")
+# В режиме разработки используем default значение ADMIN_UUID = os.getenv("ADMIN_UUID") or os.getenv("ADMIN_UUID_DEV", "admin-secret-dev")
+if "ADMIN_UUID" not in os.environ and "ADMIN_UUID_DEV" not in os.environ:
+    print("⚠️  WARNING: ADMIN_UUID не установлен. Используется insecure default!")
+ADMIN_UUID = os.getenv("ADMIN_UUID") or os.getenv("ADMIN_UUID_DEV", "admin-secret-dev")
 
 @router.post("/invites", response_model=InviteResponse)
 async def admin_create_invite(

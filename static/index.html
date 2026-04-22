@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NuxClub — Всё о фисташках</title>
+    <link rel="stylesheet" href="/static/style.css?v=5">
+</head>
+<body>
+
+<!-- ===== ЛЕНДИНГ ===== -->
+<div id="landingPage">
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">🛡️ NuxClub</div>
+            <div class="nav-buttons">
+                <button class="btn-secondary" onclick="showLoginModal()">Войти</button>
+                <button class="btn-primary" onclick="showRegisterModal()">Регистрация</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero секция -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">🌰 Фисташки — вкус и польза</h1>
+            <p class="hero-subtitle">
+                Откройте для себя удивительный мир фисташек. Узнайте о пользе, 
+                выращивании и применении этих замечательных орехов.
+            </p>
+            <div class="hero-buttons">
+                <button class="btn-outline btn-large" onclick="showLoginModal()">Войти</button>
+            </div>
+        </div>
+        <div class="hero-illustration">
+            <div class="floating-card card-1">🌰 Полезные</div>
+            <div class="floating-card card-2">🌿 Натуральные</div>
+            <div class="floating-card card-3">😋 Вкусные</div>
+        </div>
+    </section>
+
+    <!-- О фисташках -->
+    <section class="features">
+        <h2 class="section-title">Почему фисташки?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">💪</div>
+                <h3>Богаты белком</h3>
+                <p>Фисташки содержат около 20% белка, что делает их отличным источником растительного протеина</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">❤️</div>
+                <h3>Полезны для сердца</h3>
+                <p>Содержат мононенасыщенные жиры и антиоксиданты, которые поддерживают здоровье сердечно-сосудистой системы</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>Улучшают память</h3>
+                <p>Богаты витамином B6 и антиоксидантами, которые помогают улучшить работу мозга</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👁️</div>
+                <h3>Защищают зрение</h3>
+                <p>Содержат лютеин и зеаксантин — антиоксиданты, важные для здоровья глаз</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Дают энергию</h3>
+                <p>Фисташки — отличный источник энергии благодаря содержанию полезных жиров и углеводов</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌱</div>
+                <h3>Помогают пищеварению</h3>
+                <p>Высокое содержание клетчатки способствует здоровому пищеварению</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Интересные факты -->
+    <section class="pricing">
+        <h2 class="section-title">Интересные факты о фисташках</h2>
+        <div class="pricing-cards">
+            <div class="pricing-card">
+                <div class="pricing-header">
+                    <h3>🌍 География</h3>
+                </div>
+                <ul class="pricing-features">
+                    <li>🇮🇷 Родина — Иран и Средняя Азия</li>
+                    <li>🌳 Деревья живут до 400 лет</li>
+                    <li>☀️ Любят жаркий климат</li>
+                    <li>🏜️ Растут в засушливых регионах</li>
+                    <li>🌱 Созревают 3-4 года</li>
+                </ul>
+            </div>
+            <div class="pricing-card featured">
+                <div class="pricing-badge">Любопытно</div>
+                <div class="pricing-header">
+                    <h3>🎭 История</h3>
+                </div>
+                <ul class="pricing-features">
+                    <li>👑 "Королевский орех" в Персии</li>
+                    <li>📜 Упоминаются в Библии</li>
+                    <li>🎨 Символ богатства</li>
+                    <li>🌟 Любимый орех царицы Савской</li>
+                    <li>🎉 Считались афродизиаком</li>
+                </ul>
+            </div>
+            <div class="pricing-card">
+                <div class="pricing-header">
+                    <h3>🍽️ Использование</h3>
+                </div>
+                <ul class="pricing-features">
+                    <li>🍨 В мороженом и десертах</li>
+                    <li>🥗 В салатах и закусках</li>
+                    <li>🎂 В выпечке и кондитерских изделиях</li>
+                    <li>🥜 Как самостоятельный снэк</li>
+                    <li>🍝 В соусах и пасте</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <p>© 2025 NuxClub. Все права защищены.</p>
+    </footer>
+</div>
+
+<!-- ===== МОДАЛЬНОЕ ОКНО ВХОДА ===== -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal('loginModal')">&times;</span>
+        <div class="form-box">
+            <h2>👋 Вход в аккаунт</h2>
+            <input type="text" id="loginUsername" placeholder="Логин" autocomplete="username">
+            <input type="password" id="loginPassword" placeholder="Пароль" autocomplete="current-password">
+            <button id="loginBtn" class="btn-primary btn-full">Войти</button>
+            <p class="form-footer">
+                Нет аккаунта? <a href="#" onclick="switchToRegister(event)">Зарегистрироваться</a>
+            </p>
+            <div id="loginError" class="error hidden"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== МОДАЛЬНОЕ ОКНО РЕГИСТРАЦИИ ===== -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal('registerModal')">&times;</span>
+        <div class="form-box">
+            <h2>🎉 Регистрация</h2>
+            <input type="text" id="regInviteCode" placeholder="Код приглашения" required>
+            <input type="text" id="regUsername" placeholder="Логин" autocomplete="username" required>
+            <input type="password" id="regPassword" placeholder="Пароль" autocomplete="new-password" required>
+            <button id="registerBtn" class="btn-primary btn-full">Зарегистрироваться</button>
+            <p class="form-footer">
+                Уже есть аккаунт? <a href="#" onclick="switchToLogin(event)">Войти</a>
+            </p>
+            <div id="registerError" class="error hidden"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ОСНОВНОЕ ПРИЛОЖЕНИЕ ===== -->
+<div id="appView" class="hidden">
+    <div class="container">
+        <div class="header">
+            <span>Добро пожаловать, <span id="userName"></span></span>
+            <div class="header-buttons">
+                <button class="btn-small" onclick="openInstructions()">📖 Инструкции</button>
+                <span class="balance-display" id="balanceDisplay">💰 0 ⭐️</span>
+                <button id="telegramLinkBtn" class="btn-small" onclick="showTelegramLink()">📱 Привязать Telegram</button>
+                <button id="logoutBtn">Выйти</button>
+            </div>
+        </div>
+        
+        <h2>NuxTunnel</h2>
+        <div id="proxyService"></div>
+        
+        <hr>
+        
+        <h2>NuxGuard</h2>
+        <div id="wgServicesList"></div>
+        
+        <h3>Создать новую услугу NuxGuard</h3>
+        <input type="text" id="wgName" placeholder="Название услуги" maxlength="100">
+        <button id="createWgBtn">Создать</button>
+        <div id="createResult"></div>
+        
+        <hr>
+        
+        <h3>Мои инвайты</h3>
+        <button id="refreshInvitesBtn">Обновить</button>
+        <div id="invitesList"></div>
+        <button id="createInviteBtn">Создать инвайт</button>
+    </div>
+</div>
+
+<!-- Модальное окно для привязки Telegram -->
+<div id="telegramLinkModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal('telegramLinkModal')">&times;</span>
+        <div class="form-box">
+            <h2>📱 Привязать Telegram</h2>
+            <p>Нажмите кнопку ниже, чтобы получить код для привязки Telegram аккаунта</p>
+            <a id="telegramBotLink" href="#" target="_blank" class="telegram-bot-link">
+                Открыть бота @your_bot
+            </a>
+            <button id="generateCodeBtn" class="btn-primary btn-full">Получить код</button>
+            <div id="telegramCodeResult" class="hidden" style="margin-top: 15px;">
+                <p><strong>Ваш код:</strong></p>
+                <code id="telegramCode" class="connect-code"></code>
+                <p class="hint">Отправьте этот код боту для привязки</p>
+            </div>
+            <div id="telegramError" class="error hidden"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== МОДАЛЬНОЕ ОКНО ИНСТРУКЦИЙ ===== -->
+<div id="instructionsModal" class="modal">
+    <div class="modal-content modal-large">
+        <span class="modal-close" onclick="closeModal('instructionsModal')">&times;</span>
+        <div class="instructions-container">
+            <h2>📖 Инструкции</h2>
+            
+            <div class="instructions-tabs">
+                <button class="tab-btn active" onclick="showInstructionTab('tunnel')">📡 NuxTunnel</button>
+                <button class="tab-btn" onclick="showInstructionTab('guard')">🔐 NuxGuard</button>
+                <button class="tab-btn" onclick="showInstructionTab('payment')">⭐️ Оплата</button>
+            </div>
+
+            <div id="instruction-tunnel" class="instruction-tab active">
+                <h3>📡 NuxTunnel (Прокси)</h3>
+                <div class="instruction-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Войдите в личный кабинет</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">В разделе "NuxTunnel" нажмите "Подключиться"</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">Откроется Telegram с предложением подключить прокси</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-text">Нажмите "Подключить" — готово!</div>
+                    </div>
+                </div>
+                <div class="instruction-note">
+                    <strong>Важно:</strong>
+                    <ul>
+                        <li>✅ Бесплатен при наличии NuxGuard</li>
+                        <li>✅ При регистрации — 7 дней бесплатно</li>
+                        <li>❌ Без NuxGuard прокси отключается</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="instruction-guard" class="instruction-tab">
+                <h3>🔐 NuxGuard (WireGuard)</h3>
+                <h4>Как создать:</h4>
+                <div class="instruction-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Войдите в личный кабинет или бота</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Нажмите "➕ Создать"</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">Введите название и скачайте конфиг</div>
+                    </div>
+                </div>
+                <h4>Как подключить:</h4>
+                <ul class="instruction-list">
+                    <li>Windows/macOS/Linux: WireGuard клиент</li>
+                    <li>Android/iOS: AmneziaWG или WireGuard приложение</li>
+                    <li>Импортируйте .conf файл и подключитесь</li>
+                </ul>
+                <div class="instruction-note">
+                    <strong>Стоимость:</strong>
+                    <ul>
+                        <li>💰 3 ⭐️/мес за услугу</li>
+                        <li>✅ Безлимитный трафик</li>
+                        <li>✅ Автопродление при наличии баланса</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="instruction-payment" class="instruction-tab">
+                <h3>⭐️ Оплата и баланс</h3>
+                <h4>Как пополнить:</h4>
+                <div class="instruction-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Перейдите в раздел "Пополнить"</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Выберите пакет звёзд</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">Оплатите через Telegram</div>
+                    </div>
+                </div>
+                <h4>Автопродление:</h4>
+                <ul class="instruction-list">
+                    <li>Проверка каждые 6 часов</li>
+                    <li>Баланс ≥ 3 ⭐️ — услуга продлевается</li>
+                    <li>Баланс = 0 ⭐️ — услуга деактивируется</li>
+                </ul>
+                <div class="instruction-note">
+                    <strong>Тарифы:</strong>
+                    <ul>
+                        <li>🔐 NuxGuard: 3 ⭐️/мес</li>
+                        <li>📡 NuxTunnel: бесплатно (при NuxGuard)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/script.js?v=8"></script>
+</body>
+</html>

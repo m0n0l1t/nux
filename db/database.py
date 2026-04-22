@@ -45,6 +45,5 @@ async def init_db():
         import logging
         logging.getLogger(__name__).warning(f"Alembic not available, using create_all fallback: {e}")
         # Fallback: создаём таблицы если alembic не работает
-        from database import engine, Base
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)

@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   function counter(id, start, end, duration, suffix = '') {
-    let obj = document.getElementById(id)
-    if (!obj) return // Элемент не найден, выходим
-    
-    let current = start,
+    let obj = document.getElementById(id),
+      current = start,
       range = end - start,
       increment = end > start ? 1 : -1,
       step = Math.abs(Math.floor(duration / range)),
@@ -16,14 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
           formattedNumber = (current / 1000).toFixed(1) + 'k' // Adding the "k" suffix
         }
 
-        if (obj) obj.textContent = formattedNumber + suffix
+        obj.textContent = formattedNumber + suffix
         if (current == end) {
           clearInterval(timer)
         }
       }, step)
   }
 
-  // Запускаем счётчики только если элементы существуют
   counter('count1', 100, 7, 5000, '+')
   counter('count2', 100, 30, 5000, '+')
   counter('count3', 0, 500, 5000, '+')
