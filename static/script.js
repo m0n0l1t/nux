@@ -150,7 +150,7 @@ async function login() {
     document.getElementById('loginError').textContent = '';
     
     try {
-        const data = await apiCall('/token', {
+        const data = await apiCall('/auth/token', {
             method: 'POST',
             body: JSON.stringify({ username, password })
         });
@@ -196,7 +196,7 @@ async function register() {
     document.getElementById('registerError').textContent = '';
     
     try {
-        await apiCall('/register', {
+        await apiCall('/auth/register', {
             method: 'POST',
             body: JSON.stringify({
                 invite_code: inviteCode,
