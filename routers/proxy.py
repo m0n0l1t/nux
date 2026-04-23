@@ -20,5 +20,5 @@ async def get_proxy(current_user: User = Depends(get_current_user), db: AsyncSes
         "name": proxy.name,
         "expiration_date": proxy.expiration_date,
         "proxy_link": proxy.proxy_link,
-        "days_left": (proxy.expiration_date - datetime.now(timezone.utc)).days
+        "days_left": 0
     }

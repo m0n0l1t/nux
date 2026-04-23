@@ -2,20 +2,19 @@ name: FastAPI CI/CD with Docker
 
 on:
   push:
-    branches: [ master, main ]  # Запуск при пуше в ветку master или main
+    branches: [ master, main ]
   pull_request:
     branches: [ master, main ]
 
 jobs:
-  # ЭТАП 1: Тестирование (CI)
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4          # v3 → v4 (Node.js 24)
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5      # v4 → v5 (Node.js 24)
         with:
           python-version: '3.11'
 
@@ -23,36 +22,24 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest httpx  # Утилиты для тестов
+          pip install pytest httpx
 
       - name: Run tests
-        run: |
-          # Если тестов пока нет, можно просто проверить синтаксис: 
-          # python -m compileall .
-          pytest
+        run: pytest
 
-  # ЭТАП 2: Деплой на сервер (CD)
   deploy:
     runs-on: ubuntu-latest
-    needs: test  # Деплой начнется только если тесты прошли успешно
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'  # Деплоим из ветки main или master
+    needs: test
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     steps:
       - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v0.1.5
+        uses: appleboy/ssh-action@v1.0.3   # обновлено с v0.1.5
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            # Переходим в папку проекта
             cd /var/www/gotelegram-site
-            
-            # Подтягиваем последние изменения из текущей ветки
             git pull
-            
-            # Пересобираем и запускаем контейнеры
-            # Используем "docker compose" (современный стандарт)
             docker compose up -d --build
-            
-            # Очистка старых ненужных образов, чтобы не забивать диск
             docker image prune -f
