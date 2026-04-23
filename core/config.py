@@ -17,7 +17,7 @@ def get_required_env(key: str, default: Optional[str] = None) -> str:
 HOST_MOSCOW = os.getenv("HOST_MOSCOW")
 HOST_AMSTERDAM = os.getenv("HOST_AMSTERDAM")
 
-AMNESIA_API_URL = f"http://{HOST_AMSTERDAM}:4001" if HOST_AMSTERDAM else None
+AMNESIA_API_URL = f"http://{HOST_AMSTERDAM}" if HOST_AMSTERDAM else None
 AMNESIA_API_KEY = os.getenv("AMNESIA_API_KEY")
 TELEMT_API_URL = f"http://{HOST_AMSTERDAM}:9091" if HOST_AMSTERDAM else None
 TELEMT_AUTH_HEADER = os.getenv("TELEMT_AUTH_HEADER")
@@ -33,8 +33,23 @@ QR_IMAGE_PATH = os.path.join(BASE_DIR, "qr.png")
 os.makedirs(CLIENTS_DIR, exist_ok=True)
 os.makedirs(os.path.dirname(INSTRUCTION_PATH), exist_ok=True)
 
+
+
+WG_SETTINGS_PATH = [
+    os.getenv('Jc'),
+    os.getenv('Jmin'),
+    os.getenv('Jmax'),
+    os.getenv('S1'),
+    os.getenv('S2'),
+    os.getenv('H1'),
+    os.getenv('H2'),
+    os.getenv('H3'),
+    os.getenv('H4'),
+]
+
+
+
 # JWT настройки
-import os
 # В режиме разработки используемdefault значения, но с предупреждением
 SECRET_KEY = os.getenv("SECRET_KEY") or os.getenv("SECRET_KEY_DEV", "dev-secret-key-change-in-prod")
 if "SECRET_KEY" not in os.environ and "SECRET_KEY_DEV" not in os.environ:

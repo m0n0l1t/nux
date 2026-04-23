@@ -6,11 +6,11 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import BufferedInputFile
+from aiogram.types import BufferedInputFile, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from dotenv import load_dotenv
 from sqlalchemy import select
-from datetime import datetime
+from datetime import datetime, timezone
 from db import models, crud
 from db.crud import create_proxy_service, create_user_from_telegram
 from db.database import engine, Base, AsyncSessionLocal
@@ -512,21 +512,19 @@ async def show_proxy(callback: types.CallbackQuery):
         
         proxy = await crud.get_proxy_service(db, user.id)
         if not proxy:
-            await callback.message.answer(
-                "❌ Услуга NuxTunnel не найдена",
-                reply_markup=get_back_kb()
-            )
-            await callback.answer()
+            await create_proxy_service(db, user.id)
+            await show_proxy(callback)
             return
-        
-        days_left = (proxy.expiration_date - datetime.utcnow()).days
+
+        days_left = 0
         text = (
-            f"📡 <b>NuxTunnel</b>\n\n"
+            f"📡 NuxTunnel\n\n"
             f"📛 Название: {proxy.name}\n"
-            f"⏳ Осталось дней: <b>{days_left}</b>\n"
-            f"🔗 Ссылка: <code>{proxy.proxy_link}</code>"
+            f"⏳ Осталось дней: {days_left}\n"
         )
-        await callback.message.answer(text, parse_mode="HTML")
+        button = InlineKeyboardButton(text="🚀 Подключить прокси", url=proxy.proxy_link)
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[[button]])
+        await callback.message.answer(text, reply_markup=keyboard)
     await callback.answer()
 
 
@@ -548,9 +546,9 @@ async def list_wg(callback: types.CallbackQuery):
             )
             await callback.answer()
             return
-        
+
         for s in services:
-            days_left = (s.expiration_date - datetime.utcnow()).days
+            days_left = 0
             text = (
                 f"🔐 <b>{s.name}</b>\n"
                 f"⏳ Осталось дней: <b>{days_left}</b>\n"

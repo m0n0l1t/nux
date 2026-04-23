@@ -116,10 +116,17 @@ async def create_proxy_service(db: AsyncSession, user_id: int, expiration_days=3
             auth_header=TELEMT_AUTH_HEADER,  # если включён в конфиге
     ) as client:
         # Создать нового пользователя
+        name = f'user_{user_id}'
+        current = await client.get_user(name)
+        if current:
+            await client.delete_user(name)
+
         new_user = await client.create_user(
-            CreateUserRequest(username=f'user_{user_id}', max_tcp_conns=10)
+            CreateUserRequest(username=name, max_tcp_conns=10)
         )
-        proxy_link = f'tg://proxy?server={DOMAIN_NAME}&port=443&secret={new_user.secret}'
+
+        proxy_link = new_user.user.links.tls[0].replace(HOST_AMSTERDAM, DOMAIN_NAME)
+
         expiration = datetime.now() + timedelta(days=expiration_days)
         service = ProxyService(user_id=user_id, expiration_date=expiration, proxy_link=proxy_link)
         db.add(service)

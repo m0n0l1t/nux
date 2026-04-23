@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import PlainTextResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
+
+from core.config import WG_SETTINGS_PATH
 from db.database import get_db
 from core.auth import get_current_user
 from db.models import User
@@ -49,15 +51,15 @@ def generate_wireguard_config(svc) -> str:
 Address = {svc.address}
 DNS = {svc.dns}
 PrivateKey = {svc.private_key}
-Jc = 2
-Jmin = 10
-Jmax = 50
-S1 = 28
-S2 = 17
-H1 = 1428878524
-H2 = 1643968564
-H3 = 54841605
-H4 = 988008980
+Jc = {WG_SETTINGS_PATH[0]}
+Jmin = {WG_SETTINGS_PATH[1]}
+Jmax = {WG_SETTINGS_PATH[2]}
+S1 = {WG_SETTINGS_PATH[3]}
+S2 = {WG_SETTINGS_PATH[4]}
+H1 = {WG_SETTINGS_PATH[5]}
+H2 = {WG_SETTINGS_PATH[6]}
+H3 = {WG_SETTINGS_PATH[7]}
+H4 = {WG_SETTINGS_PATH[8]}
 
 [Peer]
 PublicKey = {svc.public_key}

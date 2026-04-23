@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import String, Integer, DateTime, ForeignKey, Boolean, Float, Text
+from sqlalchemy import String, Integer, DateTime, ForeignKey, Boolean, Float, Text, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from db.database import Base
 
@@ -9,7 +9,7 @@ class User(Base):
     username: Mapped[str | None] = mapped_column(String(100), unique=True, index=True, nullable=True)  # nullable для регистрации через бота
     hashed_password: Mapped[str | None] = mapped_column(String(255), nullable=True)  # nullable для регистрации через бота
     invite_code_used: Mapped[str | None] = mapped_column(String(36), nullable=True)  # UUID использованного инвайта
-    telegram_id: Mapped[int | None] = mapped_column(Integer, unique=True, nullable=True)
+    telegram_id: Mapped[int | None] = mapped_column(BigInteger, unique=True, nullable=True)
     telegram_registered: Mapped[bool] = mapped_column(Boolean, default=False)  # зарегистрирован ли через бота
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     invite_quota: Mapped[int] = mapped_column(Integer, default=5)
@@ -51,7 +51,7 @@ class ProxyService(Base):
 
 class WireGuardService(Base):
     __tablename__ = "wireguard_services"
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     uuid_api: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(100), nullable=False)

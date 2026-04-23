@@ -102,7 +102,7 @@ templates = Jinja2Templates(directory="templates")
 # Монтируем статические файлы (CSS, JS, изображения)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-app.add_middleware(NoCacheMiddleware)
+# app.add_middleware(NoCacheMiddleware)
 
 # Подключаем роутеры
 app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
