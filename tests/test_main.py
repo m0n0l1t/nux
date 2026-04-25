@@ -1,14 +1,17 @@
 import pytest
-from httpx import AsyncClient
+from aiogram import Dispatcher
+from httpx import AsyncClient, ASGITransport
 from main import app
 from db.database import get_db, Base
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
+from services.bot import dp  # импортируем реальный диспетчер
+from aiogram.fsm.storage.memory import MemoryStorage
 
 # ---------- Настройка тестовой БД ----------
 TEST_DATABASE_URL = "sqlite+aiosqlite:///./test.db"
 
-engine = create_async_engine(TEST_DATABASE_URL, echo=True)
+engine = create_async_engine(TEST_DATABASE_URL, echo=False)
 TestingSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 # Переопределяем зависимость get_db
@@ -29,10 +32,11 @@ async def setup_database():
         await conn.run_sync(Base.metadata.drop_all)
 
 @pytest.fixture
-async def client():
-    """Асинхронный HTTP-клиент для тестирования FastAPI."""
-    async with AsyncClient(app=app, base_url="http://test") as ac:
-        yield ac
+def dispatcher(monkeypatch):
+    """Возвращает тот же диспетчер, но с MemoryStorage для тестов."""
+    storage = MemoryStorage()
+    monkeypatch.setattr(dp, "storage", storage)
+    return dp
 
 # ---------- Тесты ----------
 async def test_health_check(client: AsyncClient):

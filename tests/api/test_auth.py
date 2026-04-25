@@ -5,9 +5,9 @@ async def test_register_user(client: AsyncClient):
     payload = {
         "username": "tester",
         "password": "strongpass",
-        "invite": "some-invite-code"  # В реальности нужно заранее создать инвайт в БД
+        "invite_code": "some-invite-code"  # несуществующий
     }
     response = await client.post("/auth/register", json=payload)
-    # Ожидаем, что invite невалиден — вернёт 400
     assert response.status_code == 400
-    assert "Invalid invite code" in response.text
+    data = response.json()
+    assert data["detail"] == "Invalid or already used invite"
