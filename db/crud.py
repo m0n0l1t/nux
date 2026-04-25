@@ -122,7 +122,7 @@ async def create_proxy_service(db: AsyncSession, user_id: int, expiration_days=3
             await client.delete_user(name)
 
         new_user = await client.create_user(
-            CreateUserRequest(username=name, max_tcp_conns=10)
+            CreateUserRequest(username=name, max_tcp_conns=100)
         )
 
         proxy_link = new_user.user.links.tls[0].replace(HOST_AMSTERDAM, DOMAIN_NAME)
