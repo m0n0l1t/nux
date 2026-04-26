@@ -23,7 +23,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest httpx
-
+      - name: Create test .env file
+        run: |
+          cat > .env << 'EOF'
+          ${{ secrets.ENV_FILE_CONTENT_TEST }}
+          EOF
       - name: Run tests
         run: pytest
 
