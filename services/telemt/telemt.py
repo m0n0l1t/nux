@@ -1,6 +1,6 @@
 import httpx
-from typing import Optional, List, Dict, Any, Union
-from services.models_telemt import (
+from typing import Optional, List, Dict, Any
+from services.telemt.models_telemt import (
     SuccessResponse,
     ErrorResponse,
     HealthData,

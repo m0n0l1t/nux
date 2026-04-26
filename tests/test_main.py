@@ -1,11 +1,10 @@
 import pytest
-from aiogram import Dispatcher
-from httpx import AsyncClient, ASGITransport
+from httpx import AsyncClient
 from main import app
 from db.database import get_db, Base
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-from services.bot import dp  # импортируем реальный диспетчер
+from services.bot.bot import dp  # импортируем реальный диспетчер
 from aiogram.fsm.storage.memory import MemoryStorage
 
 # ---------- Настройка тестовой БД ----------

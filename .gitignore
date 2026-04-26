@@ -7,6 +7,6 @@ __pycache__/
 *.log
 *.db
 /files/
-/services/amnesia_example.py
-/services/telemt_example.py
+/services/amnezia/amnesia_example.py
+/services/telemt/telemt_example.py
 /migrations/versions/

@@ -1,3 +1,4 @@
+import asyncio
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, FileResponse
@@ -16,6 +17,8 @@ from routers import (
     billing_router,
     telegram_connect_router
 )
+from services.bot.bot import init_bot
+
 
 class NoCacheMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
@@ -37,8 +40,7 @@ async def lifespan(app: FastAPI):
     logger.info("✅ Database initialized")
 
     # Запускаем бота в фоновой задаче
-    import asyncio
-    from services.bot import bot as tg_bot, dp
+    tg_bot, dp = await init_bot()
 
     # Создаём задачу для polling бота
     bot_task = asyncio.create_task(dp.start_polling(tg_bot))

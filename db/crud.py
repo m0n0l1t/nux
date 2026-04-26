@@ -3,12 +3,12 @@ from sqlalchemy import select
 from datetime import datetime, timedelta
 import uuid
 
-from services.amnesia import AmnesiaAdminClient
-from services.wireguard_models import WireGuardConfig, transform_endpoint
-from services.decoder import decode_vpn_config
-from services.models_amnesia import CreateClientRequest
-from services.telemt import TelemtClient
-from services.models_telemt import CreateUserRequest
+from services.amnezia.amnesia import AmnesiaAdminClient
+from services.amnezia.wireguard_models import WireGuardConfig, transform_endpoint
+from services.amnezia.decoder import decode_vpn_config
+from services.amnezia.models_amnesia import CreateClientRequest
+from services.telemt.telemt import TelemtClient
+from services.telemt.models_telemt import CreateUserRequest
 from db.models import User, Invite, ProxyService, WireGuardService
 from core.auth import hash_password, verify_password
 from core.config import AMNESIA_API_URL, AMNESIA_API_KEY, TELEMT_API_URL, TELEMT_AUTH_HEADER, DOMAIN_NAME, HOST_AMSTERDAM, HOST_MOSCOW
@@ -18,8 +18,13 @@ async def get_user_by_username(db: AsyncSession, username: str) -> User | None:
     result = await db.execute(select(User).where(User.username == username))
     return result.scalar_one_or_none()
 
-async def get_user_by_id(db: AsyncSession, user_id: int) -> User | None:
+async def get_user_by_id(user_id: int, db: AsyncSession) -> User | None:
     result = await db.execute(select(User).where(User.id == user_id))
+    return result.scalar_one_or_none()
+
+async def get_user_by_invite(db: AsyncSession, code: str) -> User | None:
+    invite = await get_invite_by_code(db, code)
+    result = await db.execute(select(User).where(User.id == invite.used_by_user_id))
     return result.scalar_one_or_none()
 
 async def create_user(db: AsyncSession, username: str, password: str, invite_code: str = None) -> User:

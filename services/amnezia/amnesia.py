@@ -1,7 +1,7 @@
 
 import httpx
 
-from services.models_amnesia import (
+from services.amnezia.models_amnesia import (
     ClientsResponse,
     CreateClientRequest,
     CreateClientResponse,
