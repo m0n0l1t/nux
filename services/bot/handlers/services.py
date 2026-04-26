@@ -67,8 +67,7 @@ async def list_wg(callback: CallbackQuery):
             kb.button(text="🗑 Удалить", callback_data=f"delete_wg_{s.id}")
             kb.adjust(2)
             await callback.message.answer(text, parse_mode="HTML", reply_markup=kb.as_markup())
-        await callback.message.answer('Переход в главное меню', parse_mode="HTML",
-                                      reply_markup=kb_create.as_markup())
+        await callback.message.answer(reply_markup=kb_create.as_markup())
     await callback.answer()
 
 @router.callback_query(lambda c: c.data.startswith("download_"))

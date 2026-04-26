@@ -141,14 +141,16 @@ async def process_invite_code(message: Message, state: FSMContext):
             return
 
         try:
-            user = await crud.create_user_from_telegram(db, message.from_user.id, invite_code)
+            tg_id = message.from_user.id
+            username = message.from_user.username or f'user_{tg_id}'
+            user = await crud.create_user_from_telegram(db, username,
+                                                        tg_id, invite_code)
             invite.used_by_user_id = user.id
             invite.used_at = datetime.now()
             await db.commit()
             await crud.create_proxy_service(db, user.id)
             await message.answer(
-                f"🎉 <b>Регистрация успешна!</b>\n\n"
-                f"👤 Ваш ID: <b>{user.id}</b>\n"
+                f"🎉 <b>Регистрация успешна!</b>\n\n"                
                 f"💰 Баланс: <b>{user.balance_stars:.1f} ⭐️</b>\n\n"
                 f"💡 Теперь вы можете зарегистрироваться на сайте с этим же инвайт-кодом,\n"
                 f"чтобы установить логин и пароль.\n\n"

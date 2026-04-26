@@ -35,13 +35,13 @@ async def create_user(db: AsyncSession, username: str, password: str, invite_cod
     await db.refresh(user)
     return user
 
-async def create_user_from_telegram(db: AsyncSession, telegram_id: int, invite_code: str) -> User:
+async def create_user_from_telegram(db: AsyncSession, username: str, telegram_id: int, invite_code: str) -> User:
     """Создаёт пользователя при регистрации через Telegram бота (без логина/пароля)"""
     user = User(
         telegram_id=telegram_id,
         invite_code_used=invite_code,
         telegram_registered=True,
-        username=f"user_{telegram_id}",  # временный username
+        username=username,  # временный username
         hashed_password=""  # пустой пароль, будет установлен при регистрации на сайте
     )
     db.add(user)
@@ -120,14 +120,14 @@ async def create_proxy_service(db: AsyncSession, user_id: int, expiration_days=3
             base_url=TELEMT_API_URL,
             auth_header=TELEMT_AUTH_HEADER,  # если включён в конфиге
     ) as client:
-        # Создать нового пользователя
-        name = f'user_{user_id}'
+        user = await get_user_by_id(user_id, db)
+        name = user.username or f'user_{user_id}'
         current = await client.get_user(name)
         if current:
             await client.delete_user(name)
 
         new_user = await client.create_user(
-            CreateUserRequest(username=name, max_tcp_conns=100)
+            CreateUserRequest(username=name)
         )
 
         proxy_link = new_user.user.links.tls[0].replace(HOST_AMSTERDAM, DOMAIN_NAME)

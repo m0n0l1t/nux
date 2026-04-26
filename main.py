@@ -15,7 +15,6 @@ from routers import (
     invites_router,
     admin_router,
     billing_router,
-    telegram_connect_router
 )
 from services.bot.bot import init_bot
 
@@ -113,7 +112,6 @@ app.include_router(wireguard_router, tags=["WireGuard"])
 app.include_router(invites_router, tags=["Invites"])
 app.include_router(admin_router, tags=["Admin"])
 app.include_router(billing_router, tags=["Billing"])
-app.include_router(telegram_connect_router, tags=["Telegram"])
 
 @app.get("/health")
 async def health_check():

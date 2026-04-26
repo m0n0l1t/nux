@@ -4,7 +4,6 @@ from .wireguard import router as wireguard_router
 from .invites import router as invites_router
 from .admin import router as admin_router
 from .billing import router as billing_router
-from .telegram_connect import router as telegram_connect_router
 
 __all__ = [
     "auth_router", 
@@ -13,5 +12,4 @@ __all__ = [
     "invites_router", 
     "admin_router", 
     "billing_router",
-    "telegram_connect_router"
 ]

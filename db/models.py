@@ -14,8 +14,8 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     invite_quota: Mapped[int] = mapped_column(Integer, default=5)
     balance_stars: Mapped[float] = mapped_column(Float, default=0.0)  # Баланс в звёздах Telegram
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now(), onupdate=datetime.now())
 
     # Отношения
     invites_created = relationship("Invite", foreign_keys="Invite.creator_user_id", back_populates="creator")
@@ -30,7 +30,7 @@ class Invite(Base):
     code: Mapped[str] = mapped_column(String(36), unique=True, index=True, nullable=False)
     creator_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     used_by_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())
     used_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     expires_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
@@ -83,16 +83,3 @@ class Payment(Base):
     completed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     user = relationship("User", back_populates="payments")
-
-
-class TelegramConnectCode(Base):
-    """Коды для привязки Telegram к аккаунту"""
-    __tablename__ = "telegram_connect_codes"
-    id: Mapped[int] = mapped_column(primary_key=True)
-    code: Mapped[str] = mapped_column(String(36), unique=True, index=True, nullable=False)  # UUID
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    is_used: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    used_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
-
-    user = relationship("User", backref="connect_codes")
