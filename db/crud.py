@@ -196,7 +196,7 @@ async def delete_wireguard_service(db: AsyncSession, service: WireGuardService):
     await db.commit()
 
 async def link_telegram_id(db: AsyncSession, user_id: int, telegram_id: int):
-    user = await get_user_by_id(db, user_id)
+    user = await get_user_by_id(user_id, db)
     if user and user.telegram_id is None:
         user.telegram_id = telegram_id
         await db.commit()
@@ -206,7 +206,7 @@ async def link_telegram_id(db: AsyncSession, user_id: int, telegram_id: int):
 # ---- Balance ----
 async def update_user_balance(db: AsyncSession, user_id: int, amount: float) -> float:
     """Обновляет баланс пользователя. amount может быть отрицательным для списания."""
-    user = await get_user_by_id(db, user_id)
+    user = await get_user_by_id(user_id, db)
     if not user:
         raise ValueError("User not found")
     user.balance_stars += amount
@@ -215,7 +215,7 @@ async def update_user_balance(db: AsyncSession, user_id: int, amount: float) -> 
     return user.balance_stars
 
 async def get_user_balance(db: AsyncSession, user_id: int) -> float:
-    user = await get_user_by_id(db, user_id)
+    user = await get_user_by_id(user_id, db)
     return user.balance_stars if user else 0.0
 
 # ---- Payments ----
@@ -287,7 +287,7 @@ async def check_and_renew_wireguard(db: AsyncSession, service: WireGuardService)
     Если баланс 0 — деактивирует услугу.
     Возвращает True если услуга продлена, False если деактивирована.
     """
-    user = await get_user_by_id(db, service.user_id)
+    user = await get_user_by_id(service.user_id, db)
     if not user:
         await deactivate_wireguard_service(db, service)
         return False

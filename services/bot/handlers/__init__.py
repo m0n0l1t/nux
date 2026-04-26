@@ -1,4 +1,4 @@
-from . import start, menu, balance, services, instructions, invites, connect, cancel
+from . import start, menu, balance, services, instructions, invites,  cancel
 
 def register_all_handlers(dp):
     dp.include_router(start.router)
@@ -7,5 +7,4 @@ def register_all_handlers(dp):
     dp.include_router(services.router)
     dp.include_router(instructions.router)
     dp.include_router(invites.router)
-    dp.include_router(connect.router)
     dp.include_router(cancel.router)

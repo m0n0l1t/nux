@@ -4,7 +4,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 import logging
 
 from services.bot.keyboards import get_main_menu_kb
-from services.bot.utils.db_helpers import get_db_session, get_user_by_telegram_id
+from services.bot.utils.db_helpers import get_db_session
 from db import crud
 
 router = Router()
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 @router.callback_query(lambda c: c.data == "balance")
 async def show_balance(callback: CallbackQuery):
     async with get_db_session() as db:
-        user = await get_user_by_telegram_id(callback.from_user.id, db)
+        user = await crud.get_user_by_telegram_id(db, callback.from_user.id)
         if not user:
             await callback.answer("Авторизуйтесь через /start", show_alert=True)
             return
@@ -92,7 +92,7 @@ async def on_pre_checkout_query(pre_checkout_q: PreCheckoutQuery):
 async def on_successful_payment(message: Message):
     payment = message.successful_payment
     async with get_db_session() as db:
-        user = await get_user_by_telegram_id(message.from_user.id, db)
+        user = await crud.get_user_by_telegram_id(db, message.from_user.id)
         if not user:
             await message.answer("❌ Пользователь не найден")
             return

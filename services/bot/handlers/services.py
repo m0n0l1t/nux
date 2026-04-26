@@ -6,7 +6,7 @@ from aiogram.types import InlineKeyboardButton
 
 from services.bot.states import CreateWGState
 from services.bot.keyboards import get_back_kb, get_main_menu_kb
-from services.bot.utils.db_helpers import get_db_session, get_user_by_telegram_id
+from services.bot.utils.db_helpers import get_db_session
 from db import crud
 from routers.wireguard import generate_wireguard_config  # предполагается существование
 
@@ -15,7 +15,7 @@ router = Router()
 @router.callback_query(lambda c: c.data == "proxy")
 async def show_proxy(callback: CallbackQuery):
     async with get_db_session() as db:
-        user = await get_user_by_telegram_id(callback.from_user.id, db)
+        user = await crud.get_user_by_telegram_id(db, callback.from_user.id)
         if not user:
             await callback.answer("Авторизуйтесь через /start", show_alert=True)
             return
@@ -37,8 +37,12 @@ async def show_proxy(callback: CallbackQuery):
 
 @router.callback_query(lambda c: c.data == "wg_list")
 async def list_wg(callback: CallbackQuery):
+    kb_create = InlineKeyboardBuilder()
+    kb_create.button(text="➕ Создать новый конфиг", callback_data="wg_create")
+    kb_create.button(text="🔙 Назад в меню", callback_data="back_to_menu")
+
     async with get_db_session() as db:
-        user = await get_user_by_telegram_id(callback.from_user.id, db)
+        user = await crud.get_user_by_telegram_id(db, callback.from_user.id)
         if not user:
             await callback.answer("Авторизуйтесь через /start", show_alert=True)
             return
@@ -46,7 +50,7 @@ async def list_wg(callback: CallbackQuery):
         if not services:
             await callback.message.answer(
                 "У вас нет услуг NuxGuard. Создайте первую через меню.",
-                reply_markup=get_back_kb()
+                reply_markup=kb_create.as_markup()
             )
             await callback.answer()
             return
@@ -63,13 +67,15 @@ async def list_wg(callback: CallbackQuery):
             kb.button(text="🗑 Удалить", callback_data=f"delete_wg_{s.id}")
             kb.adjust(2)
             await callback.message.answer(text, parse_mode="HTML", reply_markup=kb.as_markup())
+        await callback.message.answer('Переход в главное меню', parse_mode="HTML",
+                                      reply_markup=kb_create.as_markup())
     await callback.answer()
 
 @router.callback_query(lambda c: c.data.startswith("download_"))
 async def download_config(callback: CallbackQuery):
     service_id = int(callback.data.split("_")[1])
     async with get_db_session() as db:
-        user = await get_user_by_telegram_id(callback.from_user.id, db)
+        user = await crud.get_user_by_telegram_id(db, callback.from_user.id)
         if not user:
             await callback.answer("Авторизуйтесь", show_alert=True)
             return
@@ -88,7 +94,7 @@ async def download_config(callback: CallbackQuery):
 async def delete_wg(callback: CallbackQuery):
     service_id = int(callback.data.split("_")[2])
     async with get_db_session() as db:
-        user = await get_user_by_telegram_id(callback.from_user.id, db)
+        user = await crud.get_user_by_telegram_id(db, callback.from_user.id)
         if not user:
             await callback.answer("Авторизуйтесь", show_alert=True)
             return
@@ -121,7 +127,7 @@ async def create_wg_name(message: Message, state: FSMContext):
         await message.answer("Название не может быть пустым. Попробуйте ещё раз.")
         return
     async with get_db_session() as db:
-        user = await get_user_by_telegram_id(message.from_user.id, db)
+        user = await crud.get_user_by_telegram_id(db, message.from_user.id)
         if not user:
             await message.answer("Ошибка авторизации. Используйте /start")
             await state.clear()
