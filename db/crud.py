@@ -122,9 +122,12 @@ async def create_proxy_service(db: AsyncSession, user_id: int, expiration_days=3
     ) as client:
         user = await get_user_by_id(user_id, db)
         name = user.username or f'user_{user_id}'
-        current = await client.get_user(name)
-        if current:
-            await client.delete_user(name)
+        try:
+            current = await client.get_user(name)
+            if current:
+                await client.delete_user(name)
+        except:
+            pass
 
         new_user = await client.create_user(
             CreateUserRequest(username=name)
