@@ -12,14 +12,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from main import app
 from db.database import get_db, Base
 from db import models  # Импорт моделей
-from aiogram import Dispatcher
-from aiogram.fsm.storage.memory import MemoryStorage
-from services.bot.bot import init_bot
 
 # Тестовая БД — используйте in-memory SQLite
 TEST_DATABASE_URL = "sqlite+aiosqlite:///./test.db"
 
-bot, real_dp = init_bot()
 
 engine = create_async_engine(TEST_DATABASE_URL, echo=False)
 TestingSessionLocal = sessionmaker(
@@ -60,21 +56,6 @@ async def db_session():
     async with TestingSessionLocal() as session:
         yield session
 
-
-@pytest.fixture
-def dispatcher():
-    """Создаёт тестовый диспетчер с MemoryStorage и всеми хендлерами из реального бота."""
-    storage = MemoryStorage()
-    test_dp = Dispatcher(storage=storage)
-    # Копируем все роутеры из реального диспетчера
-    for router in real_dp.routers:
-        test_dp.include_router(router)
-    return test_dp
-
-@pytest.fixture
-def mock_bot():
-    bot.session.close()  # Закрываем реальную сессию бота
-    return MagicMock(spec=bot)  # Мокаем все методы бота
 
 @pytest.fixture
 async def auth_headers(client):

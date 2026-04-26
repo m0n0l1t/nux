@@ -4,7 +4,6 @@ from main import app
 from db.database import get_db, Base
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-from services.bot.bot import dp  # импортируем реальный диспетчер
 from aiogram.fsm.storage.memory import MemoryStorage
 
 # ---------- Настройка тестовой БД ----------
@@ -29,13 +28,6 @@ async def setup_database():
     yield
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-
-@pytest.fixture
-def dispatcher(monkeypatch):
-    """Возвращает тот же диспетчер, но с MemoryStorage для тестов."""
-    storage = MemoryStorage()
-    monkeypatch.setattr(dp, "storage", storage)
-    return dp
 
 # ---------- Тесты ----------
 async def test_health_check(client: AsyncClient):

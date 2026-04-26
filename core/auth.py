@@ -22,7 +22,7 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     # Приводим sub к строке, если он есть
     if "sub" in to_encode:
@@ -42,7 +42,7 @@ async def get_current_user(
     except (JWTError, ExpiredSignatureError):
         raise HTTPException(401, "Invalid or expired token")
     from db.crud import get_user_by_id
-    user = await get_user_by_id(db, int(user_id))
+    user = await get_user_by_id(int(user_id), db)
     if not user or not user.is_active:
         raise HTTPException(401, "User inactive or not found")
     return user
