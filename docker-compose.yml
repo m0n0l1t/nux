@@ -5,6 +5,8 @@ services:
     build: .
     container_name: fastapi_project
     restart: always
+    env_file:
+      - .env
     ports:
       - "127.0.0.1:8000:8000"  # Привязываем только к локальному хосту для безопасности
     environment:
