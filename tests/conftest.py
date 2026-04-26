@@ -14,11 +14,12 @@ from db.database import get_db, Base
 from db import models  # Импорт моделей
 from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-from services.bot.bot import bot
-from services.bot.bot import dp as real_dp
+from services.bot.bot import init_bot
 
 # Тестовая БД — используйте in-memory SQLite
 TEST_DATABASE_URL = "sqlite+aiosqlite:///./test.db"
+
+bot, real_dp = init_bot()
 
 engine = create_async_engine(TEST_DATABASE_URL, echo=False)
 TestingSessionLocal = sessionmaker(
