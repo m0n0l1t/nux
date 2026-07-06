@@ -26,7 +26,7 @@ async def cmd_start(message: Message, state: FSMContext):
                 f"📅 Аккаунт создан: {user.created_at.strftime('%d.%m.%Y')}\n\n"
                 f"Используйте меню ниже 👇",
                 parse_mode="HTML",
-                reply_markup=get_main_menu_kb()
+                reply_markup=get_main_menu_kb(message.from_user.id)
             )
             await state.clear()
         else:
@@ -122,7 +122,7 @@ async def process_invite_code(message: Message, state: FSMContext):
                     f"✅ <b>Вы уже зарегистрированы как {existing_user.username}!</b>\n\n"
                     f"💰 Баланс: <b>{existing_user.balance_stars:.1f} ⭐️</b>",
                     parse_mode="HTML",
-                    reply_markup=get_main_menu_kb()
+                    reply_markup=get_main_menu_kb(message.from_user.id)
                 )
                 await state.clear()
                 return
@@ -135,7 +135,7 @@ async def process_invite_code(message: Message, state: FSMContext):
                 f"💰 Баланс: <b>{existing.balance_stars:.1f} ⭐️</b>\n\n"
                 f"Теперь используйте меню 👇",
                 parse_mode="HTML",
-                reply_markup=get_main_menu_kb()
+                reply_markup=get_main_menu_kb(message.from_user.id)
             )
             await state.clear()
             return
@@ -156,7 +156,7 @@ async def process_invite_code(message: Message, state: FSMContext):
                 f"чтобы установить логин и пароль.\n\n"
                 f"Используйте меню 👇",
                 parse_mode="HTML",
-                reply_markup=get_main_menu_kb()
+                reply_markup=get_main_menu_kb(message.from_user.id)
             )
         except Exception as e:
             logger.error(f"Registration error: {e}")

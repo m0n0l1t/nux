@@ -20,7 +20,7 @@ async def cmd_menu(message: Message, state: FSMContext):
         await message.answer(
             f"👋 <b>Главное меню</b>\nПользователь: {user.username}",
             parse_mode="HTML",
-            reply_markup=get_main_menu_kb()
+            reply_markup=get_main_menu_kb(message.from_user.id)
         )
     await state.clear()
 
@@ -29,6 +29,6 @@ async def back_to_menu(callback: CallbackQuery):
     await callback.message.edit_text(
         "📱 <b>Главное меню</b>",
         parse_mode="HTML",
-        reply_markup=get_main_menu_kb()
+        reply_markup=get_main_menu_kb(callback.message.from_user.id)
     )
     await callback.answer()

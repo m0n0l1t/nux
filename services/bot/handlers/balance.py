@@ -113,5 +113,5 @@ async def on_successful_payment(message: Message):
             f"⭐️ Зачислено: <b>{amount}</b> звёзд\n"
             f"💰 Новый баланс: <b>{new_balance:.1f}</b> звёзд",
             parse_mode="HTML",
-            reply_markup=get_main_menu_kb()
+            reply_markup=get_main_menu_kb(message.from_user.id)
         )

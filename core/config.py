@@ -21,6 +21,7 @@ AMNESIA_API_URL = f"http://{HOST_AMSTERDAM}" if HOST_AMSTERDAM else None
 AMNESIA_API_KEY = os.getenv("AMNESIA_API_KEY")
 TELEMT_API_URL = f"http://{HOST_AMSTERDAM}:9091" if HOST_AMSTERDAM else None
 TELEMT_AUTH_HEADER = os.getenv("TELEMT_AUTH_HEADER")
+ADMIN_TG = os.getenv("ADMIN_TG")
 
 # Пути
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,6 +29,7 @@ DB_PATH = os.path.join(BASE_DIR, "bot.db")
 CLIENTS_DIR = os.path.join(BASE_DIR, "data", "clients")
 INSTRUCTION_PATH = os.path.join(BASE_DIR, "data", "instruction.pdf")
 QR_IMAGE_PATH = os.path.join(BASE_DIR, "qr.png")
+
 
 # Создаём папки, если их нет
 os.makedirs(CLIENTS_DIR, exist_ok=True)
