@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from core.logger import logger
 from db import crud
 from db.database import init_db, AsyncSessionLocal
 from routers import (
@@ -31,9 +32,6 @@ class NoCacheMiddleware(BaseHTTPMiddleware):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
-    import logging
-    logger = logging.getLogger(__name__)
 
     await init_db()
     logger.info("✅ Database initialized")

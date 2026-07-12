@@ -5,8 +5,8 @@ import uuid
 
 from services.amnezia.amnesia import AmnesiaAdminClient
 from services.amnezia.wireguard_models import WireGuardConfig, transform_endpoint
-from services.amnezia.decoder import decode_vpn_config
-from services.amnezia.models_amnesia import CreateClientRequest
+from services.amnezia.decoder import decode_vpn_config, logger
+from services.amnezia.models_amnesia import CreateClientRequest, DeleteClientRequest
 from services.telemt.telemt import TelemtClient
 from services.telemt.models_telemt import CreateUserRequest
 from db.models import User, Invite, ProxyService, WireGuardService
@@ -195,8 +195,16 @@ async def get_wireguard_service(db: AsyncSession, service_id: int, user_id: int)
     return result.scalar_one_or_none()
 
 async def delete_wireguard_service(db: AsyncSession, service: WireGuardService):
-    await db.delete(service)
-    await db.commit()
+    async with AmnesiaAdminClient(
+            base_url=AMNESIA_API_URL,
+            api_key=AMNESIA_API_KEY,
+    ) as client:
+        logger.info(f'[delete_wireguard_service] {service.uuid_api}')
+        await client.delete_client(
+            DeleteClientRequest(clientId=service.uuid_api)
+        )
+        await db.delete(service)
+        await db.commit()
 
 async def link_telegram_id(db: AsyncSession, user_id: int, telegram_id: int):
     user = await get_user_by_id(user_id, db)
