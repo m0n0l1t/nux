@@ -54,7 +54,7 @@ class ClientInfo(BaseModel):
     @field_validator('protocol')
     def protocol_must_be_allowed(cls, v: str) -> str:
         """Проверяет, что протокол входит в список допустимых."""
-        allowed = {'amneziawg', 'wireguard'}  # можно расширить
+        allowed = {'amneziawg', 'wireguard', 'amneziawg2'}  # можно расширить
         if v not in allowed:
             raise ValueError(f'protocol must be one of {allowed}')
         return v
@@ -75,7 +75,7 @@ class UpdateClientRequest(BaseModel):
 
 class DeleteClientRequest(BaseModel):
     clientId: str = Field(description="Идентификатор (PublicKey)")
-    protocol: Literal["amneziawg", "amneziawg2", "xray"] = Field(default="amneziawg")
+    protocol: Literal["amneziawg", "amneziawg2", "xray"] = Field(default="amneziawg2")
 
 
 class ActionResponse(BaseModel):
