@@ -61,6 +61,10 @@ H2 = {WG_SETTINGS_PATH[6]}
 H3 = {WG_SETTINGS_PATH[7]}
 H4 = {WG_SETTINGS_PATH[8]}
 I1 = {WG_SETTINGS_PATH[9]}
+I2 = 
+I3 = 
+I4 = 
+I5 = 
 
 [Peer]
 PublicKey = {svc.public_key}
