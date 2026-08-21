@@ -153,7 +153,7 @@ async def create_wireguard_service(db: AsyncSession, user_id: int, name: str, ex
         base_url=AMNESIA_API_URL,
         api_key=AMNESIA_API_KEY,
     ) as client:
-        logger.info(f"AMNESIA_API_URL = {AMNESIA_API_URL}")
+        logger.error(f"AMNESIA_API_URL = {AMNESIA_API_URL}")
         # Создать нового клиента
         new_client = await client.create_client(
             CreateClientRequest(clientName=name, protocol="amneziawg2")

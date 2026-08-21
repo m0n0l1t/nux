@@ -6,7 +6,7 @@ from aiogram.types import InlineKeyboardButton
 
 from services.bot.states import CreateWGState
 from services.bot.keyboards import get_back_kb, get_main_menu_kb, get_wg_options
-from services.bot.utils.db_helpers import get_db_session
+from services.bot.utils.db_helpers import get_db_session, logger
 from db import crud
 from routers.wireguard import generate_wireguard_config  # предполагается существование
 
@@ -133,6 +133,7 @@ async def create_wg_name(message: Message, state: FSMContext):
             await state.clear()
             return
         try:
+            logger.error('create_wg_name')
             service = await crud.create_wireguard_service(db, user.id, name)
             await message.answer(
                 f"✅ <b>Услуга NuxGuard '{name}' создана!</b>\n\n"
