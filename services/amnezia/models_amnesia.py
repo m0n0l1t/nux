@@ -35,7 +35,7 @@ class ClientsResponse(BaseModel):
 # === Модели для создания клиента ===
 class CreateClientRequest(BaseModel):
     clientName: str = Field(description="Имя клиента")
-    protocol: Literal["amneziawg", "amneziawg2", "xray"] = Field(default="amneziawg")
+    protocol: Literal["amneziawg", "amneziawg2", "xray"] = Field(default="amneziawg2")
     expiresAt: Optional[int] = Field(None, description="Дата окончания доступа")
 
 class ClientInfo(BaseModel):
