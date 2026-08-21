@@ -79,6 +79,10 @@ def decode_vpn_config(vpn_uri: str, debug: bool = False) -> str:
         if debug:
             logger.debug(f"Decoded text length: {len(text)}, first 200: {text[:200]}")
 
+        if res:=awg2(text):
+            return res
+
+
         # Если текст начинается с '{', пробуем извлечь конфигурацию из JSON
         if text.strip().startswith('{'):
             try:
@@ -120,3 +124,22 @@ def decode_vpn_config(vpn_uri: str, debug: bool = False) -> str:
     except Exception as e:
         logger.error(f"Decoding error: {e}")
         return vpn_uri
+
+def awg2(raw: str) -> str:
+    if raw.startswith("'") and raw.endswith("'"):
+        raw = raw[1:-1]  # удаляем первую и последнюю кавычку
+
+    # 3. Парсим внешний JSON
+    try:
+        outer = json.loads(raw)
+    except json.JSONDecodeError as e:
+        print("Ошибка парсинга JSON. Проверьте, что строка содержит корректный JSON.")
+        print("Первые 100 символов строки:", repr(raw[:100]))
+        raise e
+
+    # 4. Извлекаем last_config
+    last_config_str = outer['containers'][0]['awg']['last_config']
+
+    # 5. Парсим внутренний JSON (он экранирован)
+    last_config_obj = json.loads(last_config_str)
+    return last_config_obj.get("config")
