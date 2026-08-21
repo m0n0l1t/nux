@@ -14,8 +14,8 @@ from services.amnezia.models_amnesia import (
     BackupRequest,
     ErrorResponse,
 )
+from core.logger import logger
 
-logger = logging.getLogger(__name__)
 
 
 class AmnesiaAdminClient:

@@ -2,9 +2,9 @@ import json
 import base64
 import zlib
 import gzip
-import logging
+from core.logger import logger
 
-logger = logging.getLogger(__name__)
+
 
 
 def decode_vpn_config(vpn_uri: str, debug: bool = False) -> str:
