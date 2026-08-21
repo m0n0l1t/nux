@@ -8,6 +8,8 @@ from sqlalchemy import pool
 
 from alembic import context
 
+from core.config import SYNC_DATABASE_URL
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -46,7 +48,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = os.environ.get("SYNC_DATABASE_URL")
+    url = SYNC_DATABASE_URL
     context.configure(url=url, target_metadata=target_metadata, literal_binds=True)
 
     with context.begin_transaction():
@@ -61,7 +63,7 @@ def run_migrations_online() -> None:
 
     """
     from sqlalchemy import create_engine
-    url = os.environ.get("SYNC_DATABASE_URL")
+    url = SYNC_DATABASE_URL
     connectable = create_engine(url)
 
     with connectable.connect() as connection:

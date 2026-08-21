@@ -23,6 +23,15 @@ TELEMT_API_URL = f"http://{HOST_AMSTERDAM}:9091" if HOST_AMSTERDAM else None
 TELEMT_AUTH_HEADER = os.getenv("TELEMT_AUTH_HEADER")
 ADMIN_TG = os.getenv("ADMIN_TG")
 
+POSTGRES_USER=os.getenv("POSTGRES_USER")
+POSTGRES_PASSWORD=os.getenv("POSTGRES_PASSWORD")
+POSTGRES_DB=os.getenv("POSTGRES_DB")
+DB = f'{POSTGRES_USER}:{POSTGRES_PASSWORD}@{HOST_AMSTERDAM}:5432{POSTGRES_DB}'
+
+DATABASE_URL=f'postgresql+asyncpg://{DB}'
+SYNC_DATABASE_URL=f'postgresql+psycopg2://{DB}'
+
+
 # Пути
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, "bot.db")
@@ -47,6 +56,7 @@ WG_SETTINGS_PATH = [
     os.getenv('H2'),
     os.getenv('H3'),
     os.getenv('H4'),
+    os.getenv('I1'),
 ]
 
 

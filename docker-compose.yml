@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   fastapi_app:
     build: .
@@ -8,6 +6,24 @@ services:
     env_file:
       - .env
     ports:
-      - "127.0.0.1:8000:8000"  # Привязываем только к локальному хосту для безопасности
+      - "8000:8000"   # слушаем на всех интерфейсах, порт 8000
     environment:
       - PYTHONUNBUFFERED=1
+    depends_on:
+      - db           # гарантируем, что база запустится первой
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"   # доступ к БД снаружи (опционально, можно убрать)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

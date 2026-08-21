@@ -32,7 +32,12 @@ class InterfaceConfig(BaseModel):
     h1: Optional[int] = None
     h2: Optional[int] = None
     h3: Optional[int] = None
-    h4: Optional[int] = None
+    h4: Optional[str] = None
+    i1: Optional[str] = None
+    i2: Optional[str] = None
+    i3: Optional[str] = None
+    i4: Optional[str] = None
+    i5: Optional[str] = None
 
     @field_validator('address', mode='before')
     def split_address(cls, v):
@@ -126,7 +131,7 @@ class WireGuardConfig(BaseModel):
                 interface_data['dns'] = value
             elif key_lower == 'privatekey':
                 interface_data['private_key'] = value
-            elif key_lower in ('jc', 'jmin', 'jmax', 's1', 's2', 'h1', 'h2', 'h3', 'h4'):
+            elif key_lower in ('jc', 'jmin', 'jmax', 's1', 's2', 'h1', 'h2', 'h3', 'h4', 'i1'):
                 try:
                     interface_data[key_lower] = int(value)
                 except ValueError:
@@ -193,6 +198,8 @@ class WireGuardConfig(BaseModel):
             lines.append(f"H3 = {self.interface.h3}")
         if self.interface.h4 is not None:
             lines.append(f"H4 = {self.interface.h4}")
+        if self.interface.i1 is not None:
+            lines.append(f"I1 = {self.interface.i1}")
 
         lines.append("")  # пустая строка между секциями
 
