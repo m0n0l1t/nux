@@ -201,6 +201,11 @@ class WireGuardConfig(BaseModel):
         if self.interface.i1 is not None:
             lines.append(f"I1 = {self.interface.i1}")
 
+        lines.append(f"I2 = ")
+        lines.append(f"I3 = ")
+        lines.append(f"I4 = ")
+        lines.append(f"I5 = ")
+
         lines.append("")  # пустая строка между секциями
 
         # Секция Peer
