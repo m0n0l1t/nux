@@ -156,7 +156,7 @@ async def create_wireguard_service(db: AsyncSession, user_id: int, name: str, ex
 
         # Создать нового клиента
         new_client = await client.create_client(
-            CreateClientRequest(clientName=name, protocol="amneziawg")
+            CreateClientRequest(clientName=name, protocol="amneziawg2")
         )
         config = WireGuardConfig.from_str(decode_vpn_config(new_client.client.config))
         
