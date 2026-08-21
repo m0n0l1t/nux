@@ -1,5 +1,5 @@
-
 import httpx
+import logging
 
 from services.amnezia.models_amnesia import (
     ClientsResponse,
@@ -14,6 +14,8 @@ from services.amnezia.models_amnesia import (
     BackupRequest,
     ErrorResponse,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class AmnesiaAdminClient:
@@ -61,7 +63,10 @@ class AmnesiaAdminClient:
         self, request: CreateClientRequest
     ) -> CreateClientResponse:
         """Создать нового клиента."""
-        resp = await self._client.post("/clients", json=request.model_dump(exclude_unset=True))
+        # Логируем тело запроса для отладки
+        payload = request.model_dump(exclude_unset=True)
+        logger.info(f"Creating client with payload: {payload}")
+        resp = await self._client.post("/clients", json=payload)
         self._raise_for_status(resp)
         return CreateClientResponse.model_validate(resp.json())
 
