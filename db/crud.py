@@ -201,7 +201,7 @@ async def delete_wireguard_service(db: AsyncSession, service: WireGuardService):
     ) as client:
         logger.info(f'[delete_wireguard_service] {service.uuid_api}')
         await client.delete_client(
-            DeleteClientRequest(clientId=service.uuid_api)
+            DeleteClientRequest(clientId=service.uuid_api, protocol="amneziawg2")
         )
         await db.delete(service)
         await db.commit()

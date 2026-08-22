@@ -68,7 +68,7 @@ class CreateClientResponse(BaseModel):
 # === Модели для обновления/удаления клиента ===
 class UpdateClientRequest(BaseModel):
     clientId: str = Field(description="Идентификатор (PublicKey)")
-    protocol: Optional[Literal["amneziawg", "amneziawg2", "xray"]] = None
+    protocol: Optional[Literal["amneziawg", "amneziawg2", "xray"]] = Field(default="amneziawg2")
     expiresAt: Optional[int] = None
     status: Optional[Literal["active", "disabled"]] = None
 
