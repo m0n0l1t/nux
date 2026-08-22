@@ -53,6 +53,8 @@ WG_SETTINGS_PATH = [
     os.getenv('Jmax'),
     os.getenv('S1'),
     os.getenv('S2'),
+    os.getenv('S3'),
+    os.getenv('S4'),
     os.getenv('H1'),
     os.getenv('H2'),
     os.getenv('H3'),

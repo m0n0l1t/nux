@@ -29,6 +29,8 @@ class InterfaceConfig(BaseModel):
     jmax: Optional[int] = None
     s1: Optional[int] = None
     s2: Optional[int] = None
+    s3: Optional[int] = None
+    s4: Optional[int] = None
     h1: Optional[int] = None
     h2: Optional[int] = None
     h3: Optional[int] = None
@@ -131,7 +133,7 @@ class WireGuardConfig(BaseModel):
                 interface_data['dns'] = value
             elif key_lower == 'privatekey':
                 interface_data['private_key'] = value
-            elif key_lower in ('jc', 'jmin', 'jmax', 's1', 's2', 'h1', 'h2', 'h3', 'h4', 'i1'):
+            elif key_lower in ('jc', 'jmin', 'jmax', 's1', 's2','s3', 's4', 'h1', 'h2', 'h3', 'h4', 'i1'):
                 try:
                     interface_data[key_lower] = int(value)
                 except ValueError:
@@ -190,6 +192,10 @@ class WireGuardConfig(BaseModel):
             lines.append(f"S1 = {self.interface.s1}")
         if self.interface.s2 is not None:
             lines.append(f"S2 = {self.interface.s2}")
+        if self.interface.s3 is not None:
+            lines.append(f"S3 = {self.interface.s3}")
+        if self.interface.s4 is not None:
+            lines.append(f"S4 = {self.interface.s4}")
         if self.interface.h1 is not None:
             lines.append(f"H1 = {self.interface.h1}")
         if self.interface.h2 is not None:
