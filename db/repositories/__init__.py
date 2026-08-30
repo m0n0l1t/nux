@@ -5,6 +5,7 @@ from .wg import WireGuardRepository
 from .payment import PaymentRepository
 from .nux_service import ServiceRepository
 from .remnawave import RemnawaveRepository
+from .service_manager import ServiceManager
 
 __all__ = [
     "UserRepository",
@@ -14,4 +15,5 @@ __all__ = [
     "PaymentRepository",
     "ServiceRepository",
     "RemnawaveRepository",
+    "ServiceManager",
 ]

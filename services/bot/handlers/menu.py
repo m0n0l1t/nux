@@ -3,7 +3,6 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from db import crud
 from db.repositories import UserRepository
 from services.bot.handlers.start import cmd_start
 from services.bot.keyboards import get_main_menu_kb

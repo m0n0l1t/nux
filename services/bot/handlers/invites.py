@@ -1,10 +1,9 @@
 from aiogram import Router
 from aiogram.types import CallbackQuery
 
-from db.repositories import UserRepository
+from db.repositories import UserRepository, InviteRepository
 from services.bot.keyboards import get_back_kb
 from services.bot.utils.db_helpers import get_db_session
-from db import crud
 
 router = Router()
 
@@ -15,7 +14,7 @@ async def list_invites(callback: CallbackQuery):
         if not user:
             await callback.answer("Авторизуйтесь через /start", show_alert=True)
             return
-        invites = await crud.get_invites_by_creator(db, user.id)
+        invites = await InviteRepository.get_by_creator(db, user.id)
         if not invites:
             await callback.message.answer(
                 "У вас нет созданных инвайтов.",
@@ -39,7 +38,7 @@ async def create_invite_cmd(callback: CallbackQuery):
         if not user:
             await callback.answer("Авторизуйтесь", show_alert=True)
             return
-        invites = await crud.get_invites_by_creator(db, user.id)
+        invites = await  InviteRepository.get_by_creator(db, user.id)
         unused = [inv for inv in invites if inv.used_by_user_id is None]
         if user.invite_quota is not None and len(unused) >= user.invite_quota:
             await callback.answer(
@@ -47,7 +46,7 @@ async def create_invite_cmd(callback: CallbackQuery):
                 show_alert=True
             )
             return
-        invite = await crud.create_invite(db, user.id, None)
+        invite = await  InviteRepository.create(db, user.id, None)
         await callback.message.answer(
             f"✅ <b>Создан инвайт-код:</b>\n\n<code>{invite.code}</code>",
             parse_mode="HTML"
