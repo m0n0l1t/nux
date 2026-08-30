@@ -4,11 +4,11 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder, InlineKeyboardMarkup
 from aiogram.types import InlineKeyboardButton
 
-from db.repositories import UserRepository
+from db.repositories import UserRepository, ProxyRepository, ServiceRepository, WireGuardRepository
+from services.amnezia.wireguard_models import WireGuardConfig
 from services.bot.states import CreateWGState
 from services.bot.keyboards import get_back_kb, get_main_menu_kb, get_wg_options
 from services.bot.utils.db_helpers import get_db_session, logger
-from routers.wireguard import generate_wireguard_config  # предполагается существование
 
 router = Router()
 
@@ -24,9 +24,10 @@ async def show_proxy(callback: CallbackQuery):
         if not user:
             await callback.answer("Авторизуйтесь через /start", show_alert=True)
             return
-        proxy = await crud.get_proxy_service(db, user.id)
+        name = f'{callback.from_user.username}_proxy'
+        proxy = await ServiceRepository.get_by_user_name_type(db,  user.id, name, 'proxy')
         if not proxy:
-            await crud.create_proxy_service(db, user.id)
+            await ProxyRepository.create(db, user.id, name)
             await show_proxy(callback)
             return
         days_left = 0
@@ -35,7 +36,7 @@ async def show_proxy(callback: CallbackQuery):
             f"📛 Название: {proxy.name}\n"
             f"⏳ Осталось дней: {days_left}\n"
         )
-        button = InlineKeyboardButton(text="🚀 Подключить прокси", url=proxy.proxy_link)
+        button = InlineKeyboardButton(text="🚀 Подключить прокси", url=proxy.link)
         keyboard = InlineKeyboardMarkup(inline_keyboard=[[button]])
         await callback.message.answer(text, reply_markup=keyboard)
     await callback.answer()
@@ -48,7 +49,7 @@ async def list_wg(callback: CallbackQuery):
         if not user:
             await callback.answer("Авторизуйтесь через /start", show_alert=True)
             return
-        services = await crud.get_wireguard_services_by_user(db, user.id)
+        services = await ServiceRepository.get_by_telegram_id(db, callback.from_user.id, 'wireguard')
         if not services:
             await callback.message.answer(
                 "У вас нет услуг NuxGuard. Создайте первую через меню.",
@@ -79,11 +80,11 @@ async def download_config(callback: CallbackQuery):
         if not user:
             await callback.answer("Авторизуйтесь", show_alert=True)
             return
-        svc = await crud.get_wireguard_service(db, service_id, user.id)
+        svc = await ServiceRepository.get_by_id(db, service_id, user.id)
         if not svc:
             await callback.answer("Услуга не найдена", show_alert=True)
             return
-        config = generate_wireguard_config(svc)
+        config = WireGuardConfig.from_link(svc.link).to_config_str()
         file_data = config.encode('utf-8')
         await callback.message.answer_document(
             BufferedInputFile(file_data, filename=f"nuxguard_{callback.from_user.first_name}_{svc.name}.conf")
@@ -98,9 +99,9 @@ async def delete_wg(callback: CallbackQuery):
         if not user:
             await callback.answer("Авторизуйтесь", show_alert=True)
             return
-        svc = await crud.get_wireguard_service(db, service_id, user.id)
+        svc = await ServiceRepository.get_by_id(db, service_id, user.id)
         if svc:
-            await crud.delete_wireguard_service(db, svc)
+            await WireGuardRepository.delete(db, svc)
             await callback.answer("✅ Услуга удалена", show_alert=True)
             try:
                 await callback.message.delete()
@@ -134,11 +135,9 @@ async def create_wg_name(message: Message, state: FSMContext):
             return
         try:
             logger.error('create_wg_name')
-            service = await crud.create_wireguard_service(db, user.id, name)
+            service = await WireGuardRepository.create(db, user.id, name)
             await message.answer(
-                f"✅ <b>Услуга NuxGuard '{name}' создана!</b>\n\n"
-                f"🌐 Адрес: <code>{service.address}</code>\n"
-                f"🔑 Ключ: <code>{service.public_key}</code>",
+                f"✅ <b>Услуга NuxGuard '{name}' создана!</b>\n\n",
                 parse_mode="HTML",
                 reply_markup=get_main_menu_kb(message.from_user.id)
             )

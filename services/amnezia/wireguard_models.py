@@ -2,6 +2,8 @@ import re
 from typing import List, Optional, Union, Callable
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from services.amnezia.decoder import decode_vpn_config
+
 
 def transform_endpoint(endpoint: str, host_mapping: dict[str, str]) -> str:
     """
@@ -99,6 +101,10 @@ class WireGuardConfig(BaseModel):
 
     interface: InterfaceConfig
     peer: PeerConfig
+
+    @classmethod
+    def from_link(cls, link: str) -> 'WireGuardConfig':
+        return WireGuardConfig.from_str(decode_vpn_config(link))
 
     @classmethod
     def from_str(cls, config_str: str) -> 'WireGuardConfig':

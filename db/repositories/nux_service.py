@@ -30,13 +30,14 @@ class ServiceRepository:
         return result.scalars().all()
 
     @staticmethod
-    async def get_by_telegram_id(db: AsyncSession, telegram_id: int) -> list[Service]:
+    async def get_by_telegram_id(db: AsyncSession, telegram_id: int, service_type: str) -> list[Service]:
         """Получить все сервисы пользователя по telegram_id."""
         result = await db.execute(
             select(Service)
             .join(User, Service.user_id == User.id)
-            .where(User.telegram_id == telegram_id)
+            .where(User.telegram_id == telegram_id, Service.service_type == service_type)
             .order_by(Service.created_at.desc())
+
         )
         return result.scalars().all()
 

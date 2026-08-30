@@ -45,36 +45,7 @@ async def list_wireguard(current_user: User = Depends(get_current_user), db: Asy
         ))
     return result
 
-def generate_wireguard_config(svc) -> str:
-    """Генерирует конфигурацию WireGuard"""
-    return f"""[Interface]
-Address = {svc.address}
-DNS = {svc.dns}
-PrivateKey = {svc.private_key}
-Jc = {WG_SETTINGS_PATH[0]}
-Jmin = {WG_SETTINGS_PATH[1]}
-Jmax = {WG_SETTINGS_PATH[2]}
-S1 = {WG_SETTINGS_PATH[3]}
-S2 = {WG_SETTINGS_PATH[4]}
-S3 = {WG_SETTINGS_PATH[5]}
-S4 = {WG_SETTINGS_PATH[6]}
-H1 = {WG_SETTINGS_PATH[7]}
-H2 = {WG_SETTINGS_PATH[8]}
-H3 = {WG_SETTINGS_PATH[9]}
-H4 = {WG_SETTINGS_PATH[10]}
-I1 = {WG_SETTINGS_PATH[11]}
-I2 = 
-I3 = 
-I4 = 
-I5 = 
 
-[Peer]
-PublicKey = {svc.public_key}
-PresharedKey = {svc.preshared_key}
-AllowedIPs = 0.0.0.0/0, ::/0
-Endpoint = {svc.endpoint}
-PersistentKeepalive = 25
-"""
 
 @router.get("/{service_id}/config")
 async def download_wireguard_config(
