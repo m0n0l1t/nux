@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.database import get_db
-from db import crud
 from core.schemas import UserRegisterRequest, UserLoginRequest, LinkCredentialsRequest, TokenResponse, RegisterResponse
 from datetime import datetime
+
+from db.repositories import InviteRepository, UserRepository
 
 router = APIRouter(tags=["Authentication"])
 
@@ -12,19 +13,18 @@ async def register(
     request: UserRegisterRequest,
     db: AsyncSession = Depends(get_db)
 ):
-    invite = await crud.get_invite_by_code(db, request.invite_code)
+    invite = await InviteRepository.get_by_code(db, request.invite_code)
     if not invite:
         raise HTTPException(400, "Invalid invite")
     if invite.expires_at and invite.expires_at < datetime.now():
         raise HTTPException(400, "Invite expired")
-    if await crud.get_user_by_username(db, request.username):
+    if await UserRepository.get_by_username(db, request.username):
         raise HTTPException(400, "Username exists"
                             )
-    user = await crud.create_user(db, request.username, request.password, request.invite_code)
+    user = await UserRepository.create(db, request.username, request.password, request.invite_code)
     invite.used_by_user_id = user.id
     invite.used_at = datetime.now()
     await db.commit()
-    await crud.create_proxy_service(db, user.id)
     return {"message": "Registered", "user_id": user.id}
 
 @router.post("/link-credentials", response_model=RegisterResponse)
@@ -34,7 +34,7 @@ async def link_credentials(
 ):
     """Привязывает логин/пароль к пользователю, зарегистрированному через Telegram бота.
     Не создаёт нового пользователя — использует существующего по telegram_id."""
-    invite = await crud.get_invite_by_code(db, request.invite_code)
+    invite = await InviteRepository.get_by_code(db, request.invite_code)
     if not invite:
         raise HTTPException(400, "Invalid invite code")
     # Инвайт может быть уже использован — это нормально, если это тот же пользователь
@@ -54,7 +54,7 @@ async def link_credentials(
         raise HTTPException(400, "Telegram account not linked. Please use the bot first.")
     
     # Привязываем логин/пароль
-    user = await crud.link_credentials_to_telegram_user(
+    user = await UserRepository.link_credentials_to_telegram_user(
         db, telegram_user.telegram_id, request.username, request.password, request.invite_code
     )
     
@@ -66,17 +66,13 @@ async def link_credentials(
         invite.used_by_user_id = user.id
         invite.used_at = datetime.utcnow()
         await db.commit()
-    
-    # Создаём proxy service если его нет
-    proxy = await crud.get_proxy_service(db, user.id)
-    if not proxy:
-        await crud.create_proxy_service(db, user.id)
+
     
     return {"message": "Credentials linked successfully", "user_id": user.id}
 
 @router.post("/token", response_model=TokenResponse)
 async def login(request: UserLoginRequest, db: AsyncSession = Depends(get_db)):
-    user = await crud.authenticate_user(db, request.username, request.password)
+    user = await UserRepository.authenticate(db, request.username, request.password)
     if not user:
         raise HTTPException(401, "Invalid credentials")
     from core.auth import create_access_token

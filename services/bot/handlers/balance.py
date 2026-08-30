@@ -309,7 +309,7 @@ async def on_successful_payment(message: Message):
             description="Пополнение через Telegram Stars"
         )
         # Подтверждаем и зачисляем
-        completed_payment = await PaymentRepository.complete(
+        await PaymentRepository.complete(
             db=db,
             payment_id=payment_record.id,
             telegram_payment_id=payment.telegram_payment_charge_id

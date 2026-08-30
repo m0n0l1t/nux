@@ -3,12 +3,12 @@ from fastapi.responses import PlainTextResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
 
-from core.config import WG_SETTINGS_PATH
 from db.database import get_db
 from core.auth import get_current_user
 from db.models import User
-from db import crud
 from core.schemas import WireGuardCreateRequest, WireGuardResponse, WireGuardListResponse
+from db.repositories import ServiceRepository, WireGuardRepository
+from services.amnezia.wireguard_models import WireGuardConfig
 
 router = APIRouter(prefix="/wireguard", tags=["WireGuard"])
 
@@ -18,7 +18,7 @@ async def create_wireguard(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    svc = await crud.create_wireguard_service(db, current_user.id, request.name)
+    svc = await WireGuardRepository.create(db, current_user.id, request.name)
     days_left = (svc.expiration_date - datetime.utcnow()).days
     return WireGuardResponse(
         id=svc.id,
@@ -31,7 +31,7 @@ async def create_wireguard(
 
 @router.get("", response_model=list[WireGuardListResponse])
 async def list_wireguard(current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
-    services = await crud.get_wireguard_services_by_user(db, current_user.id)
+    services = await ServiceRepository.get_by_user(db, current_user.id)
     result = []
     for s in services:
         days_left = (s.expiration_date - datetime.utcnow()).days
@@ -53,19 +53,19 @@ async def download_wireguard_config(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    svc = await crud.get_wireguard_service(db, service_id, current_user.id)
+    svc = await ServiceRepository.get_by_id(db, service_id, current_user.id)
     if not svc:
         raise HTTPException(404, "Service not found")
     
-    config = generate_wireguard_config(svc)
+    config = WireGuardConfig.from_link(svc.link).to_config_str()
     return PlainTextResponse(content=config, media_type="text/plain", headers={
         "Content-Disposition": f"attachment; filename=wireguard_{svc.name}.conf"
     })
 
 @router.delete("/{service_id}")
 async def delete_wireguard(service_id: int, current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
-    svc = await crud.get_wireguard_service(db, service_id, current_user.id)
+    svc = await ServiceRepository.get_by_id(db, service_id, current_user.id)
     if not svc:
         raise HTTPException(404, "Service not found")
-    await crud.delete_wireguard_service(db, svc)
+    await WireGuardRepository.delete(db, svc)
     return {"ok": True}
