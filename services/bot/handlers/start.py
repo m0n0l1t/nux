@@ -5,10 +5,10 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from datetime import datetime
 
+from db.repositories import UserRepository, InviteRepository
 from services.bot.states import AuthState
 from services.bot.keyboards import get_main_menu_kb, get_back_kb
 from services.bot.utils.db_helpers import get_db_session, logger
-from db import crud
 
 router = Router()
 
@@ -17,7 +17,7 @@ router = Router()
 async def cmd_start(message: Message, state: FSMContext):
     """Главная команда — проверяет авторизацию"""
     async with get_db_session() as db:
-        user = await crud.get_user_by_telegram_id(db, message.from_user.id)
+        user = await UserRepository.get_by_telegram_id(db, message.from_user.id)
 
         if user:
             await message.answer(
@@ -85,7 +85,7 @@ async def process_invite_code(message: Message, state: FSMContext):
     """Обработка введённого инвайт-кода"""
     invite_code = message.text.strip()
     async with (get_db_session() as db):
-        invite = await crud.get_invite_by_code(db, invite_code)
+        invite = await InviteRepository.get_by_code(db, invite_code)
         if not invite or (invite.expires_at and invite.expires_at < datetime.now()):
             kb = InlineKeyboardBuilder()
             kb.button(text="🔄 Попробовать снова", callback_data="auth_invite")
@@ -98,12 +98,12 @@ async def process_invite_code(message: Message, state: FSMContext):
                 reply_markup=kb.as_markup()
             )
             return
-        print(f'user {invite.used_by_user_id} {type(invite.used_by_user_id)}')
+
         if invite.used_by_user_id:
-            existing_user = await crud.get_user_by_id(invite.used_by_user_id, db)
+            existing_user = await UserRepository.get_by_id(db,invite.used_by_user_id)
             if existing_user:
                 if existing_user.telegram_id is None:
-                    await crud.link_telegram_id(db, invite.used_by_user_id, message.from_user.id)
+                    await UserRepository.link_telegram_id(db, invite.used_by_user_id, message.from_user.id)
 
                 if existing_user.telegram_id != message.from_user.id:
                     kb = InlineKeyboardBuilder()
@@ -127,7 +127,7 @@ async def process_invite_code(message: Message, state: FSMContext):
                 await state.clear()
                 return
 
-        existing = await crud.get_user_by_telegram_id(db, message.from_user.id)
+        existing = await UserRepository.get_by_telegram_id(db, message.from_user.id)
         if existing:
             await message.answer(
                 f"✅ <b>Вы уже зарегистрированы!</b>\n\n"
@@ -143,12 +143,11 @@ async def process_invite_code(message: Message, state: FSMContext):
         try:
             tg_id = message.from_user.id
             username = message.from_user.username or f'user_{tg_id}'
-            user = await crud.create_user_from_telegram(db, username,
+            user = await UserRepository.create_from_telegram(db, username,
                                                         tg_id, invite_code)
             invite.used_by_user_id = user.id
             invite.used_at = datetime.now()
             await db.commit()
-            await crud.create_proxy_service(db, user.id)
             await message.answer(
                 f"🎉 <b>Регистрация успешна!</b>\n\n"                
                 f"💰 Баланс: <b>{user.balance_stars:.1f} ⭐️</b>\n\n"

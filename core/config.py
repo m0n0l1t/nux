@@ -18,9 +18,10 @@ HOST_MOSCOW = os.getenv("HOST_MOSCOW")
 HOST_AMSTERDAM = os.getenv("HOST_AMSTERDAM")
 
 # Не работает
-AMNESIA_API_URL = f"http://{HOST_AMSTERDAM}:4001/" if HOST_AMSTERDAM else None
+AMNESIA_API_URL_TEMPLATE = os.getenv("AMNESIA_API_URL_TEMPLATE")
 AMNESIA_API_KEY = os.getenv("AMNESIA_API_KEY")
-TELEMT_API_URL = f"http://{HOST_AMSTERDAM}:9091" if HOST_AMSTERDAM else None
+
+TELEMT_API_URL = f"http://{HOST_AMSTERDAM}:{os.getenv('TELE_PORT')}" if HOST_AMSTERDAM else None
 TELEMT_AUTH_HEADER = os.getenv("TELEMT_AUTH_HEADER")
 ADMIN_TG = os.getenv("ADMIN_TG")
 
@@ -31,6 +32,12 @@ DB = f'{POSTGRES_USER}:{POSTGRES_PASSWORD}@{HOST_AMSTERDAM}:5432/{POSTGRES_DB}'
 
 DATABASE_URL=f'postgresql+asyncpg://{DB}'
 SYNC_DATABASE_URL=f'postgresql+psycopg2://{DB}'
+
+REMNAWAVE_API=os.getenv('REMNAWAVE_API')
+REMNAWAVE_UUID=os.getenv('REMNAWAVE_UUID')
+SQUAD=os.getenv('SQUAD')
+REMNAWAVE_BASE_URL=os.getenv('REMNAWAVE_BASE_URL')
+REMNAWAVE_SUB_URL=os.getenv('REMNAWAVE_SUB_URL')
 
 
 # Пути
@@ -44,23 +51,6 @@ QR_IMAGE_PATH = os.path.join(BASE_DIR, "qr.png")
 # Создаём папки, если их нет
 os.makedirs(CLIENTS_DIR, exist_ok=True)
 os.makedirs(os.path.dirname(INSTRUCTION_PATH), exist_ok=True)
-
-
-
-WG_SETTINGS_PATH = [
-    os.getenv('Jc'),
-    os.getenv('Jmin'),
-    os.getenv('Jmax'),
-    os.getenv('S1'),
-    os.getenv('S2'),
-    os.getenv('S3'),
-    os.getenv('S4'),
-    os.getenv('H1'),
-    os.getenv('H2'),
-    os.getenv('H3'),
-    os.getenv('H4'),
-    os.getenv('I1'),
-]
 
 
 
