@@ -1,6 +1,7 @@
 from aiogram import Router
 from aiogram.types import CallbackQuery
 
+from db.repositories import UserRepository
 from services.bot.keyboards import get_back_kb
 from services.bot.utils.db_helpers import get_db_session
 from db import crud
@@ -10,7 +11,7 @@ router = Router()
 @router.callback_query(lambda c: c.data == "invites")
 async def list_invites(callback: CallbackQuery):
     async with get_db_session() as db:
-        user = await crud.get_user_by_telegram_id(db, callback.from_user.id)
+        user = await UserRepository.get_by_telegram_id(db, callback.from_user.id)
         if not user:
             await callback.answer("Авторизуйтесь через /start", show_alert=True)
             return
@@ -34,7 +35,7 @@ async def list_invites(callback: CallbackQuery):
 @router.callback_query(lambda c: c.data == "create_invite")
 async def create_invite_cmd(callback: CallbackQuery):
     async with get_db_session() as db:
-        user = await crud.get_user_by_telegram_id(db, callback.from_user.id)
+        user = await UserRepository.get_by_telegram_id(db, callback.from_user.id)
         if not user:
             await callback.answer("Авторизуйтесь", show_alert=True)
             return

@@ -4,10 +4,10 @@ from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import InlineKeyboardBuilder, InlineKeyboardMarkup
 from aiogram.types import InlineKeyboardButton
 
+from db.repositories import UserRepository
 from services.bot.states import CreateWGState
 from services.bot.keyboards import get_back_kb, get_main_menu_kb, get_wg_options
 from services.bot.utils.db_helpers import get_db_session, logger
-from db import crud
 from routers.wireguard import generate_wireguard_config  # предполагается существование
 
 router = Router()
@@ -20,7 +20,7 @@ async def show_wg_options(callback: CallbackQuery):
 @router.callback_query(lambda c: c.data == "proxy")
 async def show_proxy(callback: CallbackQuery):
     async with get_db_session() as db:
-        user = await crud.get_user_by_telegram_id(db, callback.from_user.id)
+        user = await UserRepository.get_by_telegram_id(db, callback.from_user.id)
         if not user:
             await callback.answer("Авторизуйтесь через /start", show_alert=True)
             return
@@ -44,7 +44,7 @@ async def show_proxy(callback: CallbackQuery):
 async def list_wg(callback: CallbackQuery):
 
     async with get_db_session() as db:
-        user = await crud.get_user_by_telegram_id(db, callback.from_user.id)
+        user = await UserRepository.get_by_telegram_id(db, callback.from_user.id)
         if not user:
             await callback.answer("Авторизуйтесь через /start", show_alert=True)
             return
@@ -75,7 +75,7 @@ async def list_wg(callback: CallbackQuery):
 async def download_config(callback: CallbackQuery):
     service_id = int(callback.data.split("_")[1])
     async with get_db_session() as db:
-        user = await crud.get_user_by_telegram_id(db, callback.from_user.id)
+        user = await UserRepository.get_by_telegram_id(db, callback.from_user.id)
         if not user:
             await callback.answer("Авторизуйтесь", show_alert=True)
             return
@@ -94,7 +94,7 @@ async def download_config(callback: CallbackQuery):
 async def delete_wg(callback: CallbackQuery):
     service_id = int(callback.data.split("_")[2])
     async with get_db_session() as db:
-        user = await crud.get_user_by_telegram_id(db, callback.from_user.id)
+        user = await UserRepository.get_by_telegram_id(db, callback.from_user.id)
         if not user:
             await callback.answer("Авторизуйтесь", show_alert=True)
             return
@@ -127,7 +127,7 @@ async def create_wg_name(message: Message, state: FSMContext):
         await message.answer("Название не может быть пустым. Попробуйте ещё раз.")
         return
     async with get_db_session() as db:
-        user = await crud.get_user_by_telegram_id(db, message.from_user.id)
+        user = await UserRepository.get_by_telegram_id(db, message.from_user.id)
         if not user:
             await message.answer("Ошибка авторизации. Используйте /start")
             await state.clear()
