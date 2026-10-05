@@ -1,0 +1,71 @@
+{
+    order authenticate before respond
+    order authorize before respond
+    security {
+        local identity store localdb {
+            realm local
+            path /data/.local/caddy/users.json
+        }
+        authentication portal myportal {
+            crypto default token lifetime 24h
+            enable identity store localdb
+            cookie domain {$DOMAIN}   # ваш домен из переменной окружения
+            ui {
+                links {
+                    "Моя панель" "/" icon "las la-tachometer-alt"
+                    "Профиль" "/r/whoami" icon "las la-user"
+                    "Настройки" "/r/settings" icon "las la-cog"
+                }
+            }
+            transform user {
+                match origin local
+                action add role authp/admin
+                # Если не хотите MFA, закомментируйте строку ниже
+                require mfa
+            }
+        }
+        authorization policy mypolicy {
+            set auth url /r
+            allow roles authp/admin with api key
+            auth portal myportal
+            realm local
+            acl rule {
+                match role authp/admin
+                allow
+                stop
+                log info
+            }
+            acl rule {
+                match any
+                deny
+                log warn
+            }
+        }
+    }
+}
+
+https://{$DOMAIN} {
+    # Защита API (если есть)
+    route /api/* {
+        authorize with mypolicy
+        reverse_proxy fastapi_app:8000   # замените порт, если ваш FastAPI слушает другой
+    }
+
+    # Портал аутентификации (обработчик /r)
+    handle /r {
+        rewrite * /auth
+        request_header +X-Forwarded-Prefix /r
+        authenticate with myportal
+    }
+
+    # Все пути, начинающиеся с /r, проходят аутентификацию
+    route /r* {
+        authenticate with myportal
+    }
+
+    # Все остальные запросы – авторизация и прокси на FastAPI
+    route /* {
+        authorize with mypolicy
+        reverse_proxy fastapi_app:8000
+    }
+}

@@ -39,6 +39,7 @@ SQUAD=os.getenv('SQUAD')
 REMNAWAVE_BASE_URL=os.getenv('REMNAWAVE_BASE_URL')
 REMNAWAVE_SUB_URL=os.getenv('REMNAWAVE_SUB_URL')
 
+SERVERS_IP_LIST = os.getenv("SERVERS_IP_LIST")
 
 # Пути
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

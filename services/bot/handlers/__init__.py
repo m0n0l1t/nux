@@ -1,4 +1,5 @@
-from . import start, menu, balance, services, instructions, invites,  cancel, admin
+from . import start, menu, balance, services, instructions, invites, cancel, admin, chat_member
+
 
 def register_all_handlers(dp):
     dp.include_router(start.router)
@@ -9,3 +10,4 @@ def register_all_handlers(dp):
     dp.include_router(invites.router)
     dp.include_router(cancel.router)
     dp.include_router(admin.router)
+    dp.include_router(chat_member.router)

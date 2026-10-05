@@ -8,6 +8,8 @@ from db.database import engine, Base
 from services.bot.config import BOT_TOKEN
 
 
+
+
 async def init_bot() -> Dispatcher:
     """Инициализирует и настраивает бота, возвращает Dispatcher"""
     bot = Bot(token=BOT_TOKEN)

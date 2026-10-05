@@ -7,7 +7,6 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from core.logger import logger
-from db import crud
 from db.database import init_db, AsyncSessionLocal
 from routers import (
     auth_router,
@@ -46,7 +45,7 @@ async def lifespan(app: FastAPI):
     # Запускаем фоновую задачу для проверки просроченных услуг
     async def check_expired_services():
         """Фоновая задача для проверки и продления просроченных услуг"""
-
+        return
 
         while True:
             try:
