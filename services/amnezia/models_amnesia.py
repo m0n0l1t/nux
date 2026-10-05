@@ -1,6 +1,6 @@
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional, Union
-from pydantic import BaseModel, Field, model_validator, validator, field_validator
+from typing import Any, Dict, List, Literal, Optional
+from pydantic import BaseModel, Field, model_validator, field_validator
 
 
 # === Вспомогательные модели ===
@@ -19,7 +19,9 @@ class Peer(BaseModel):
     endpoint: Optional[str] = Field(None, description="Адрес и порт подключения")
     online: bool
     expiresAt: Optional[int] = Field(None, description="Дата окончания доступа")
-    protocol: Literal["amneziawg", "amneziawg2", "xray"] = Field(description="Протокол подключения")
+    protocol: Literal["amneziawg", "amneziawg3", "xray"] = Field(
+        description="Протокол подключения"
+    )
 
 
 class Client(BaseModel):
@@ -35,8 +37,12 @@ class ClientsResponse(BaseModel):
 # === Модели для создания клиента ===
 class CreateClientRequest(BaseModel):
     clientName: str = Field(description="Имя клиента")
-    protocol: Literal["amneziawg", "amneziawg2", "xray"] = Field(default="amneziawg2")
+    protocol: Literal["amneziawg", "amneziawg3", "xray"] = Field(
+        default="amneziawg3",
+        description="Протокол подключения",
+    )
     expiresAt: Optional[int] = Field(None, description="Дата окончания доступа")
+
 
 class ClientInfo(BaseModel):
     """Модель для валидации данных клиента."""
@@ -44,19 +50,19 @@ class ClientInfo(BaseModel):
     config: str
     protocol: str
 
-    @field_validator('config')
+    @field_validator("config")
     def config_must_start_with_vpn(cls, v: str) -> str:
         """Проверяет, что конфигурация начинается с 'vpn://'."""
-        if not v.startswith('vpn://'):
+        if not v.startswith("vpn://"):
             raise ValueError('config must start with "vpn://"')
         return v
 
-    @field_validator('protocol')
+    @field_validator("protocol")
     def protocol_must_be_allowed(cls, v: str) -> str:
         """Проверяет, что протокол входит в список допустимых."""
-        allowed = {'amneziawg', 'wireguard', 'amneziawg2'}  # можно расширить
+        allowed = {"amneziawg", "amneziawg3", "xray"}
         if v not in allowed:
-            raise ValueError(f'protocol must be one of {allowed}')
+            raise ValueError(f"protocol must be one of {allowed}")
         return v
 
 
@@ -68,14 +74,18 @@ class CreateClientResponse(BaseModel):
 # === Модели для обновления/удаления клиента ===
 class UpdateClientRequest(BaseModel):
     clientId: str = Field(description="Идентификатор (PublicKey)")
-    protocol: Optional[Literal["amneziawg", "amneziawg2", "xray"]] = Field(default="amneziawg2")
+    protocol: Optional[Literal["amneziawg", "amneziawg3", "xray"]] = Field(
+        default="amneziawg3"
+    )
     expiresAt: Optional[int] = None
     status: Optional[Literal["active", "disabled"]] = None
 
 
 class DeleteClientRequest(BaseModel):
     clientId: str = Field(description="Идентификатор (PublicKey)")
-    protocol: Literal["amneziawg", "amneziawg2", "xray"] = Field(default="amneziawg2")
+    protocol: Literal["amneziawg", "amneziawg3", "xray"] = Field(
+        default="amneziawg3"
+    )
 
 
 class ActionResponse(BaseModel):
@@ -89,7 +99,7 @@ class ServerInfo(BaseModel):
     weight: float
     maxPeers: int
     totalPeers: int
-    protocols: List[Literal["amneziawg", "amneziawg2", "xray"]]
+    protocols: List[Literal["amneziawg", "amneziawg3", "xray"]]
 
 
 # === Модели для метрик нагрузки ===
@@ -144,7 +154,9 @@ class ServerLoad(BaseModel):
 class BackupClientInfo(BaseModel):
     clientId: str
     publicKey: str
-    userData: Dict[str, Any] = Field(..., description="Содержит clientName, creationDate, expiresAt")
+    userData: Dict[str, Any] = Field(
+        ..., description="Содержит clientName, creationDate, expiresAt"
+    )
 
 
 class BackupProtocolAmnezia(BaseModel):
@@ -165,7 +177,7 @@ class BackupProtocolXray(BaseModel):
 class Backup(BaseModel):
     generatedAt: datetime
     serverId: Optional[str] = None
-    protocols: List[Literal["amneziawg", "amneziawg2", "xray"]]
+    protocols: List[Literal["amneziawg", "amneziawg3", "xray"]]
     amnezia: Optional[BackupProtocolAmnezia] = None
     amneziaWg2: Optional[BackupProtocolAmnezia] = None
     xray: Optional[BackupProtocolXray] = None
@@ -174,11 +186,17 @@ class Backup(BaseModel):
     def validate_protocol_presence(self):
         for proto in self.protocols:
             if proto == "amneziawg" and self.amnezia is None:
-                raise ValueError("amnezia must be provided when protocol 'amneziawg' is in protocols")
-            if proto == "amneziawg2" and self.amneziaWg2 is None:
-                raise ValueError("amneziaWg2 must be provided when protocol 'amneziawg2' is in protocols")
+                raise ValueError(
+                    "amnezia must be provided when protocol 'amneziawg' is in protocols"
+                )
+            if proto == "amneziawg3" and self.amneziaWg2 is None:
+                raise ValueError(
+                    "amneziaWg2 must be provided when protocol 'amneziawg3' is in protocols"
+                )
             if proto == "xray" and self.xray is None:
-                raise ValueError("xray must be provided when protocol 'xray' is in protocols")
+                raise ValueError(
+                    "xray must be provided when protocol 'xray' is in protocols"
+                )
         return self
 
 

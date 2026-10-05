@@ -1,5 +1,4 @@
 import httpx
-import logging
 
 from services.amnezia.models_amnesia import (
     ClientsResponse,
@@ -17,7 +16,6 @@ from services.amnezia.models_amnesia import (
 from core.logger import logger
 
 
-
 class AmnesiaAdminClient:
     """Асинхронный клиент для административного API AmneziaVPN."""
 
@@ -31,24 +29,52 @@ class AmnesiaAdminClient:
             timeout=self.timeout,
         )
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> "AmnesiaAdminClient":
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+        await self.aclose()
+
+    async def aclose(self) -> None:
+        """Явное закрытие HTTP-клиента."""
         await self._client.aclose()
 
     def _raise_for_status(self, response: httpx.Response) -> None:
-        """Проверяет статус ответа и выбрасывает исключение с сообщением из ErrorResponse."""
-        if response.is_error:
-            try:
-                err = ErrorResponse.model_validate(response.json())
-                raise httpx.HTTPStatusError(
-                    f"{response.status_code}: {err.message}",
-                    request=response.request,
-                    response=response,
-                )
-            except Exception:
-                response.raise_for_status()
+        """
+        Проверяет статус ответа.
+        Если ответ ошибочный — пытается извлечь message из ErrorResponse
+        и выбрасывает HTTPStatusError с этим сообщением.
+        """
+        if not response.is_error:
+            return
+
+        message = response.text
+        try:
+            err = ErrorResponse.model_validate(response.json())
+            message = err.message
+        except Exception:
+            # Тело не JSON или не соответствует ErrorResponse — оставляем сырой текст
+            logger.warning(
+                "Non-standard error response from API: status=%s body=%r",
+                response.status_code,
+                response.text,
+            )
+
+        logger.error(
+            "Amnezia API error: %s %s -> %s %s",
+            response.request.method,
+            response.request.url,
+            response.status_code,
+            message,
+        )
+
+        raise httpx.HTTPStatusError(
+            f"{response.status_code}: {message}",
+            request=response.request,
+            response=response,
+        )
+
+    # === Клиенты ===
 
     async def get_clients(
         self, skip: int = 0, limit: int = 100
@@ -63,9 +89,8 @@ class AmnesiaAdminClient:
         self, request: CreateClientRequest
     ) -> CreateClientResponse:
         """Создать нового клиента."""
-        # Логируем тело запроса для отладки
         payload = request.model_dump(exclude_unset=True)
-        logger.info(f"Creating client with payload: {payload}")
+        logger.info("Creating client with payload: %s", payload)
         resp = await self._client.post("/clients", json=payload)
         self._raise_for_status(resp)
         return CreateClientResponse.model_validate(resp.json())
@@ -73,8 +98,10 @@ class AmnesiaAdminClient:
     async def update_client(
         self, request: UpdateClientRequest
     ) -> ActionResponse:
-        """Обновить данные клиента."""
-        resp = await self._client.patch("/clients", json=request.model_dump(exclude_unset=True))
+        """Обновить данные клиента (статус, expiresAt)."""
+        payload = request.model_dump(exclude_unset=True)
+        logger.info("Updating client with payload: %s", payload)
+        resp = await self._client.patch("/clients", json=payload)
         self._raise_for_status(resp)
         return ActionResponse.model_validate(resp.json())
 
@@ -82,11 +109,13 @@ class AmnesiaAdminClient:
         self, request: DeleteClientRequest
     ) -> ActionResponse:
         """Удалить клиента."""
-        resp = await self._client.request(
-            "DELETE", "/clients", json=request.model_dump(exclude_unset=True)
-        )
+        payload = request.model_dump(exclude_unset=True)
+        logger.info("Deleting client with payload: %s", payload)
+        resp = await self._client.request("DELETE", "/clients", json=payload)
         self._raise_for_status(resp)
         return ActionResponse.model_validate(resp.json())
+
+    # === Сервер ===
 
     async def get_server_info(self) -> ServerInfo:
         """Получить информацию о сервере."""
@@ -100,6 +129,8 @@ class AmnesiaAdminClient:
         self._raise_for_status(resp)
         return ServerLoad.model_validate(resp.json())
 
+    # === Бэкапы ===
+
     async def get_backup(self) -> Backup:
         """Экспортировать резервную копию конфигурации сервера."""
         resp = await self._client.get("/server/backup")
@@ -107,7 +138,7 @@ class AmnesiaAdminClient:
         return Backup.model_validate(resp.json())
 
     async def restore_backup(self, backup: BackupRequest) -> ServerInfo:
-        """Восстановить сервер из резервной копии. Возвращает информацию о сервере после восстановления."""
+        """Восстановить сервер из резервной копии."""
         resp = await self._client.post(
             "/server/backup",
             json=backup.model_dump(exclude_unset=True, mode="json"),
@@ -117,6 +148,21 @@ class AmnesiaAdminClient:
 
     async def reboot_server(self) -> ActionResponse:
         """Перезагрузить сервер."""
+        logger.warning("Rebooting Amnezia server via API")
         resp = await self._client.post("/server/reboot")
         self._raise_for_status(resp)
         return ActionResponse.model_validate(resp.json())
+
+    # === Служебное ===
+
+    async def healthcheck(self) -> bool:
+        """
+        Проверка живости API. Не требует авторизации.
+        Возвращает True, если сервис отвечает 200.
+        """
+        try:
+            resp = await self._client.get("/healthz")
+            return resp.status_code == 200
+        except httpx.HTTPError as e:
+            logger.warning("Healthcheck failed: %s", e)
+            return False
