@@ -9,7 +9,7 @@
         authentication portal myportal {
             crypto default token lifetime 24h
             enable identity store localdb
-            cookie domain {$DOMAIN}   # ваш домен из переменной окружения
+            cookie domain {$DOMAIN_NAME}   # ваш домен из переменной окружения
             ui {
                 links {
                     "Моя панель" "/" icon "las la-tachometer-alt"
@@ -44,7 +44,7 @@
     }
 }
 
-https://{$DOMAIN} {
+https://{$DOMAIN_NAME} {
     # Защита API (если есть)
     route /api/* {
         authorize with mypolicy
