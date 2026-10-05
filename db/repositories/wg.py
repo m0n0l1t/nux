@@ -6,7 +6,7 @@ from db.repositories.server import ServerRepository
 from services.amnezia.amnesia import AmnesiaAdminClient
 from services.amnezia.models_amnesia import CreateClientRequest, DeleteClientRequest
 from services.amnezia.decoder import logger
-from core.config import AMNESIA_API_URL_TEMPLATE, AMNESIA_API_KEY
+from core.config import AMNESIA_API_KEY, AMNESIA_URL
 
 class WireGuardRepository:
     @staticmethod
@@ -20,7 +20,7 @@ class WireGuardRepository:
         server_ip = await ServerRepository.select_best_server(db)
 
         # 2. Формируем URL API для этого сервера (шаблон из конфига)
-        api_url = AMNESIA_API_URL_TEMPLATE.format(ip=server_ip)
+        api_url = AMNESIA_URL
 
         async with AmnesiaAdminClient(base_url=api_url, api_key=AMNESIA_API_KEY) as client:
             logger.info(f"Создание WireGuard на сервере {server_ip}")
@@ -45,7 +45,7 @@ class WireGuardRepository:
     @staticmethod
     async def delete(db: AsyncSession, service: Service):
         if service.server_ip and service.external_id:
-            api_url = AMNESIA_API_URL_TEMPLATE.format(ip=service.server_ip)
+            api_url = AMNESIA_URL
             async with AmnesiaAdminClient(base_url=api_url, api_key=AMNESIA_API_KEY) as client:
                 try:
                     await client.delete_client(
