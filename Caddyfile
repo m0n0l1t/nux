@@ -17,11 +17,10 @@
                     "Настройки" "/r/settings" icon "las la-cog"
                 }
             }
-            transform user {
+             transform user {
                 match origin local
                 action add role authp/admin
-                # Если не хотите MFA, закомментируйте строку ниже
-                require mfa
+                # require mfa
             }
         }
         authorization policy mypolicy {
