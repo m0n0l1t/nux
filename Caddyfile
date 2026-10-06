@@ -27,8 +27,6 @@
         authorization policy mypolicy {
             set auth url /r
             allow roles authp/admin with api key
-            auth portal myportal
-            realm local
             acl rule {
                 match role authp/admin
                 allow
