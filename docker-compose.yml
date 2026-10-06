@@ -26,7 +26,10 @@ services:
       - app_network
 
   caddy:
-    image: caddy:2
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy
+    image: nux-caddy:local
     container_name: caddy
     restart: always
     ports:
