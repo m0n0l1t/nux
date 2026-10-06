@@ -40,7 +40,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     environment:
-      - DOMAIN=${DOMAIN_NAME}
+      - DOMAIN_NAME=${DOMAIN_NAME}
     networks:
       - app_network
     depends_on:
