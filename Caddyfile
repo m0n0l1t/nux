@@ -7,7 +7,7 @@
             path /data/.local/caddy/users.json
         }
         authentication portal myportal {
-            crypto default token lifetime 24h
+            crypto default token lifetime 86400
             enable identity store localdb
             cookie domain {$DOMAIN_NAME}   # ваш домен из переменной окружения
             ui {
