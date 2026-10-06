@@ -9,7 +9,7 @@
         authentication portal myportal {
             crypto default token lifetime 86400
             enable identity store localdb
-            cookie domain {$DOMAIN_NAME}   # ваш домен из переменной окружения
+            cookie domain {$DOMAIN_NAME}
             ui {
                 links {
                     "Моя панель" "/" icon "las la-tachometer-alt"
@@ -17,7 +17,7 @@
                     "Настройки" "/r/settings" icon "las la-cog"
                 }
             }
-             transform user {
+            transform user {
                 match origin local
                 action add role authp/admin
                 # require mfa
@@ -28,39 +28,32 @@
             allow roles authp/admin with api key
             acl rule {
                 match role authp/admin
-                allow
-                stop
-                log info
+                allow stop log info
             }
             acl rule {
                 match any
-                deny
-                log warn
+                deny stop log warn
             }
         }
     }
 }
 
 https://{$DOMAIN_NAME} {
-    # Защита API (если есть)
     route /api/* {
         authorize with mypolicy
-        reverse_proxy fastapi_app:8000   # замените порт, если ваш FastAPI слушает другой
+        reverse_proxy fastapi_app:8000
     }
 
-    # Портал аутентификации (обработчик /r)
     handle /r {
         rewrite * /auth
         request_header +X-Forwarded-Prefix /r
         authenticate with myportal
     }
 
-    # Все пути, начинающиеся с /r, проходят аутентификацию
     route /r* {
         authenticate with myportal
     }
 
-    # Все остальные запросы – авторизация и прокси на FastAPI
     route /* {
         authorize with mypolicy
         reverse_proxy fastapi_app:8000
