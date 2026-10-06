@@ -26,15 +26,13 @@ services:
       - app_network
 
   caddy:
-    build:
-      context: .
-      dockerfile: Dockerfile.caddy
-    image: nux-caddy:local
+    image: caddy:2
     container_name: caddy
     restart: always
     ports:
       - "80:80"
       - "443:443"
+      - "443:443/udp"    # для HTTP/3 (опционально)
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
